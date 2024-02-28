@@ -4,8 +4,8 @@ import sys
 import os
 import click
 
-from piddiplatsch.consumer import consume as do_consume
-from piddiplatsch.send import send as do_send
+from piddiplatsch.consumer import consume_topic as do_consume
+from piddiplatsch.send import send_topic as do_send
 
 CONTEXT_OBJ = dict()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], obj=CONTEXT_OBJ)
