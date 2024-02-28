@@ -33,7 +33,7 @@ setup(
     description="Demo project for a PID consumer.",
     entry_points={
         "console_scripts": [
-            "piddiplatsch=piddiplatsch.cli:main",
+            "piddiplatsch=piddiplatsch.cli:cli",
         ],
     },
     install_requires=requirements,
