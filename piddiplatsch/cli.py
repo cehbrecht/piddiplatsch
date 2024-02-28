@@ -1,16 +1,24 @@
 """Console script for piddiplatsch."""
+
 import sys
+import os
 import click
+from piddiplatsch.consumer import consume
 
 
 @click.command()
 def main(args=None):
     """Console script for piddiplatsch."""
-    click.echo("Replace this message by putting your code into "
-               "piddiplatsch.cli.main")
-    click.echo("See click documentation at https://click.palletsprojects.com/")
-    return 0
+    click.echo("Starting consumer ...")
+    consume()
 
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("Interrupted")
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)
