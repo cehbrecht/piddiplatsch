@@ -7,7 +7,7 @@ def consume_topic():
 
     channel.exchange_declare(exchange="topic_birds", exchange_type="topic")
 
-    result = channel.queue_declare("", exclusive=True)
+    result = channel.queue_declare("birds", exclusive=True)
     queue_name = result.method.queue
 
     binding_key = "bird.*"
