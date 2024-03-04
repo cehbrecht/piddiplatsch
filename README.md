@@ -11,6 +11,42 @@ Demo project for a PID consumer.
 
 -   TODO
 
+## Testing
+
+Start "vanilla" rabbitmq with docker:
+
+```
+./run_rabbit.sh
+```
+
+Check management web page:
+http://localhost:15672/
+
+Login with guest/guest.
+
+Install piddiplatsch consumer:
+
+```
+mamba env create
+conda activate piddiplatsch
+pip install -e .
+```
+
+Check available commands:
+```
+piddiplatsch --help
+```
+
+Start consumer:
+```
+piddiplatsch consume
+```
+
+Send a message to the rabbit queue:
+```
+piddiplatsch send
+```
+
 ## Credits
 
 This package was created with
