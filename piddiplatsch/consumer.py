@@ -16,10 +16,10 @@ def consume_topic(queue, type=None):
 
     print(" [*] Waiting for birds. To exit press CTRL+C")
 
-    def callback(ch, method, properties, body):
+    def on_message(ch, method, properties, body):
         # print(f" [x] {method.routing_key}:{body}")
         p = get_message_processor(type)
         p.process_message(body)
 
-    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue=queue, on_message_callback=on_message, auto_ack=True)
     channel.start_consuming()
