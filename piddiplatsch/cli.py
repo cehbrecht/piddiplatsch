@@ -4,7 +4,7 @@ import sys
 import os
 import click
 
-from piddiplatsch.consumer import consume_topic as do_consume
+from piddiplatsch.consumer import do_consume
 from piddiplatsch.send import send_topic as do_send
 
 CONTEXT_OBJ = dict()
