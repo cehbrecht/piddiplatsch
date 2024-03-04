@@ -36,9 +36,11 @@ def consume(ctx):
 
 @cli.command()
 @click.pass_context
-def send(ctx):
+@click.option('--message', '-m', default='Hello World',
+              help='A message you like to send.')
+def send(ctx, message):
     click.echo("Send to queue ...")
-    do_send()
+    do_send(message)
 
 
 if __name__ == "__main__":
