@@ -4,7 +4,7 @@ import sys
 import os
 import click
 
-from piddiplatsch.consumer import consume_topic as do_consume
+from piddiplatsch.consumer import do_consume
 from piddiplatsch.send import send_topic as do_send
 
 CONTEXT_OBJ = dict()
@@ -21,11 +21,16 @@ def cli(ctx):
 
 
 @cli.command()
+@click.option("--host", "-h", default="localhost", help="The rabbitmq hostname.")
+@click.option("--queue", "-q", default="birds", help="The queue name.")
+@click.option("--exchange", "-e", default="topic_birds", help="The exchange topic.")
+@click.option("--routing_key", "-k", default="bird.*", help="The routing key.")
+@click.option("--type", "-t", default="default", help="The consumer type.")
 @click.pass_context
-def consume(ctx):
+def consume(ctx, host, queue, exchange, routing_key, type):
     click.echo("Starting consumer ...")
     try:
-        do_consume()
+        do_consume(host, queue, exchange, routing_key, type)
     except KeyboardInterrupt:
         print("Interrupted")
         try:
@@ -36,11 +41,14 @@ def consume(ctx):
 
 @cli.command()
 @click.pass_context
-@click.option('--message', '-m', default='Hello World',
-              help='A message you like to send.')
-def send(ctx, message):
+@click.option("--exchange", "-e", default="topic_birds", help="The exchange topic.")
+@click.option("--routing_key", "-k", default="bird.penguin", help="The routing key.")
+@click.option(
+    "--message", "-m", default="Hello World", help="A message you like to send."
+)
+def send(ctx, exchange, routing_key, message):
     click.echo("Send to queue ...")
-    do_send(message)
+    do_send(exchange, routing_key, message)
 
 
 if __name__ == "__main__":

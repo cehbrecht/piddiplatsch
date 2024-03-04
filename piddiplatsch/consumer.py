@@ -1,24 +1,41 @@
 import pika
 
+from piddiplatsch.processor import get_message_processor
 
-def consume_topic():
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
-    channel = connection.channel()
 
-    channel.exchange_declare(exchange="topic_birds", exchange_type="topic")
+def do_consume(host, queue, exchange, routing_key, type=None):
+    c = PIDConsumer(queue, type)
+    c.open_connection(host, exchange, routing_key)
+    c.start_consuming()
 
-    result = channel.queue_declare("birds", exclusive=True)
-    queue_name = result.method.queue
 
-    binding_key = "bird.*"
-    channel.queue_bind(
-        exchange="topic_birds", queue=queue_name, routing_key=binding_key
-    )
+class PIDConsumer:
+    def __init__(self, queue, type=None):
+        self.queue = queue
+        self.type = type
+        self.channel = None
 
-    print(" [*] Waiting for birds. To exit press CTRL+C")
+    def open_connection(self, host, exchange, routing_key):
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
+        self.channel = connection.channel()
 
-    def callback(ch, method, properties, body):
-        print(f" [x] {method.routing_key}:{body}")
+        self.channel.exchange_declare(exchange=exchange, exchange_type="topic")
 
-    channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
-    channel.start_consuming()
+        self.channel.queue_declare(self.queue, exclusive=True)
+
+        self.channel.queue_bind(
+            exchange=exchange, queue=self.queue, routing_key=routing_key
+        )
+
+    def start_consuming(self):
+        print(" [*] Waiting for birds. To exit press CTRL+C")
+
+        self.channel.basic_consume(
+            queue=self.queue, on_message_callback=self.on_message, auto_ack=True
+        )
+        self.channel.start_consuming()
+
+    def on_message(self, ch, method, properties, body):
+        # print(f" [x] {method.routing_key}:{body}")
+        p = get_message_processor(self.type)
+        p.process_message(body)
