@@ -22,11 +22,12 @@ def cli(ctx):
 
 @cli.command()
 @click.option("--queue", "-q", default="birds", help="The queue name.")
+@click.option("--type", "-t", default="default", help="The consumer type.")
 @click.pass_context
-def consume(ctx, queue):
+def consume(ctx, queue, type):
     click.echo("Starting consumer ...")
     try:
-        do_consume(queue)
+        do_consume(queue, type)
     except KeyboardInterrupt:
         print("Interrupted")
         try:
