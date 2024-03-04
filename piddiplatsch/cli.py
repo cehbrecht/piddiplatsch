@@ -21,11 +21,12 @@ def cli(ctx):
 
 
 @cli.command()
+@click.option("--queue", "-q", default="birds", help="The queue name.")
 @click.pass_context
-def consume(ctx):
+def consume(ctx, queue):
     click.echo("Starting consumer ...")
     try:
-        do_consume()
+        do_consume(queue)
     except KeyboardInterrupt:
         print("Interrupted")
         try:
@@ -36,8 +37,9 @@ def consume(ctx):
 
 @cli.command()
 @click.pass_context
-@click.option('--message', '-m', default='Hello World',
-              help='A message you like to send.')
+@click.option(
+    "--message", "-m", default="Hello World", help="A message you like to send."
+)
 def send(ctx, message):
     click.echo("Send to queue ...")
     do_send(message)
