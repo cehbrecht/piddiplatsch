@@ -24,7 +24,7 @@ class PIDConsumer:
         self.channel.queue_declare(self.queue, exclusive=True)
 
         self.channel.queue_bind(
-            exchange="topic_birds", queue=self.queue, routing_key=routing_key
+            exchange=exchange, queue=self.queue, routing_key=routing_key
         )
 
     def start_consuming(self):
