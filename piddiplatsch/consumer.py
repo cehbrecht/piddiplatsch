@@ -3,29 +3,28 @@ import pika
 from piddiplatsch.processor import get_message_processor
 
 
-def do_consume(host, queue, type=None):
+def do_consume(host, queue, exchange, routing_key, type=None):
     c = PIDConsumer(queue, type)
-    c.open_connection(host)
+    c.open_connection(host, exchange, routing_key)
     c.start_consuming()
 
 
 class PIDConsumer:
-    def __init__(self, host, queue, type=None):
+    def __init__(self, queue, type=None):
         self.queue = queue
         self.type = type
         self.channel = None
 
-    def open_connection(self, host):
+    def open_connection(self, host, exchange, routing_key):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
         self.channel = connection.channel()
 
-        self.channel.exchange_declare(exchange="topic_birds", exchange_type="topic")
+        self.channel.exchange_declare(exchange=exchange, exchange_type="topic")
 
         self.channel.queue_declare(self.queue, exclusive=True)
 
-        binding_key = "bird.*"
         self.channel.queue_bind(
-            exchange="topic_birds", queue=self.queue, routing_key=binding_key
+            exchange="topic_birds", queue=self.queue, routing_key=routing_key
         )
 
     def start_consuming(self):
