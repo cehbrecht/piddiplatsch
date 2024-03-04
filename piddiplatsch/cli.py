@@ -21,13 +21,14 @@ def cli(ctx):
 
 
 @cli.command()
+@click.option("--host", "-h", default="localhost", help="The rabbitmq hostname.")
 @click.option("--queue", "-q", default="birds", help="The queue name.")
 @click.option("--type", "-t", default="default", help="The consumer type.")
 @click.pass_context
-def consume(ctx, queue, type):
+def consume(ctx, host, queue, type):
     click.echo("Starting consumer ...")
     try:
-        do_consume(queue, type)
+        do_consume(host, queue, type)
     except KeyboardInterrupt:
         print("Interrupted")
         try:
