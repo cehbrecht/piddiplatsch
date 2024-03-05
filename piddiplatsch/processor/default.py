@@ -8,10 +8,11 @@ KERNEL_INFORMATION_PROFILE = (
 
 class DefaultProcessor(MessageProcessor):
     def do_process_message(self, data):
-        msg = data.get("message")
-        print(f"We got a message: {msg}")
+        print(f"We got a message: {data}")
+        record = self.make_handle_record(data)
+        print(record)
 
-    def make_handle_record(self):
+    def make_handle_record(self, data):
         # http://fox.cloud.dkrz.de:8006/api/handles/21.14106/81D6053E36D55F4D41C1E5757684A35BB9BCEB0F
         record = {
             "URL": "https://www.wdc-climate.de/ui/entry?acronym=MXELv6MOOrsntds111v120627",
