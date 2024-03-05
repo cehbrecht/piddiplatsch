@@ -6,7 +6,7 @@ KERNEL_INFORMATION_PROFILE = (
 )
 
 
-class DefaultProcessor(MessageProcessor):
+class WDCCProcessor(MessageProcessor):
     def do_process_message(self, data):
         print(f"We got a message: {data}")
         record = self.make_handle_record(data)

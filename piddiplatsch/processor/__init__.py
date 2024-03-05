@@ -1,9 +1,9 @@
-from piddiplatsch.processor.default import DefaultProcessor
+from piddiplatsch.processor.wdcc import WDCCProcessor
 
 
 def get_message_processor(name):
     if name == "cmip6":
         pass
     else:
-        p = DefaultProcessor()
+        p = WDCCProcessor()
     return p
