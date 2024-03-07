@@ -21,7 +21,7 @@ def cli(ctx):
 
 
 @cli.command()
-@click.option("--host", "-h", default="localhost", help="The rabbitmq hostname.")
+@click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
 @click.option("--queue", "-q", default="birds", help="The queue name.")
 @click.option("--exchange", "-e", default="topic_birds", help="The exchange topic.")
 @click.option("--routing_key", "-k", default="bird.*", help="The routing key.")
