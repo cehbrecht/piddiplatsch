@@ -3,8 +3,8 @@ import pika
 import json
 
 
-def send_topic(exchange, routing_key, message=None):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+def send_topic(host, exchange, routing_key, message=None):
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
     channel = connection.channel()
 
     channel.exchange_declare(exchange=exchange, exchange_type="topic")

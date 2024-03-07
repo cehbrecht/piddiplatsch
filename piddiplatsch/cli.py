@@ -41,14 +41,15 @@ def consume(ctx, host, queue, exchange, routing_key, type):
 
 @cli.command()
 @click.pass_context
+@click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
 @click.option("--exchange", "-e", default="topic_birds", help="The exchange topic.")
 @click.option("--routing_key", "-k", default="bird.penguin", help="The routing key.")
 @click.option(
     "--message", "-m", default="Hello World", help="A message you like to send."
 )
-def send(ctx, exchange, routing_key, message):
+def send(ctx, host, exchange, routing_key, message):
     click.echo("Send to queue ...")
-    do_send(exchange, routing_key, message)
+    do_send(host, exchange, routing_key, message)
 
 
 if __name__ == "__main__":
