@@ -3,16 +3,15 @@ import pika
 from piddiplatsch.processor import get_message_processor
 
 
-def do_consume(host, queue, exchange, routing_key, type=None):
-    c = PIDConsumer(queue, type)
+def do_consume(host, queue, exchange, routing_key):
+    c = PIDConsumer(queue)
     c.open_connection(host, exchange, routing_key)
     c.start_consuming()
 
 
 class PIDConsumer:
-    def __init__(self, queue, type=None):
+    def __init__(self, queue):
         self.queue = queue
-        self.type = type
         self.channel = None
 
     def open_connection(self, host, exchange, routing_key):
@@ -36,8 +35,8 @@ class PIDConsumer:
         self.channel.start_consuming()
 
     def on_message(self, ch, method, properties, body):
-        # print(f" [x] {method.routing_key}:{body}")
-        p = get_message_processor(self.type)
+        print(f" [x] {method.routing_key}")
+        p = get_message_processor(method.routing_key)
         try:
             p.process_message(body)
         except ValueError as e:

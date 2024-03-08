@@ -8,6 +8,7 @@ class MessageProcessor:
         record = self.create_handle_record(data)
         if not self.validate_handle_record(record):
             raise ValueError(f"handle record is not vaild: {record}")
+        print(f"record: {record}")
 
     def create_handle_record(self, data):
         raise NotImplementedError

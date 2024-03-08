@@ -22,15 +22,14 @@ def cli(ctx):
 
 @cli.command()
 @click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
-@click.option("--queue", "-q", default="birds", help="The queue name.")
-@click.option("--exchange", "-e", default="pids_for_lta", help="The exchange topic.")
-@click.option("--routing_key", "-k", default="wdcc", help="The routing key.")
-@click.option("--type", "-t", default="wdcc", help="The consumer type.")
+@click.option("--queue", "-q", default="pids", help="The queue name.")
+@click.option("--exchange", "-e", default="pids", help="The exchange topic.")
+@click.option("--routing_key", "-k", default="pids.*", help="The routing key.")
 @click.pass_context
-def consume(ctx, host, queue, exchange, routing_key, type):
+def consume(ctx, host, queue, exchange, routing_key):
     click.echo("Starting consumer ...")
     try:
-        do_consume(host, queue, exchange, routing_key, type)
+        do_consume(host, queue, exchange, routing_key)
     except KeyboardInterrupt:
         print("Interrupted")
         try:
@@ -42,8 +41,8 @@ def consume(ctx, host, queue, exchange, routing_key, type):
 @cli.command()
 @click.pass_context
 @click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
-@click.option("--exchange", "-e", default="pids_for_lta", help="The exchange topic.")
-@click.option("--routing_key", "-k", default="wdcc", help="The routing key.")
+@click.option("--exchange", "-e", default="pids", help="The exchange topic.")
+@click.option("--routing_key", "-k", default="pids.wdcc", help="The routing key.")
 @click.option(
     "--message", "-m", default="Hello World", help="A message you like to send."
 )
