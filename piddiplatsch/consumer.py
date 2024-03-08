@@ -28,7 +28,7 @@ class PIDConsumer:
         )
 
     def start_consuming(self):
-        print(" [*] Waiting for birds. To exit press CTRL+C")
+        print(" [*] Waiting for messages. To exit press CTRL+C")
 
         self.channel.basic_consume(
             queue=self.queue, on_message_callback=self.on_message, auto_ack=True
