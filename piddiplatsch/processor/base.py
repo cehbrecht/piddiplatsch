@@ -4,7 +4,14 @@ import json
 class MessageProcessor:
     def process_message(self, message):
         data = json.loads(message)
-        self.do_process_message(data)
+        print(f"We got a message: {data}")
+        record = self.create_handle_record(data)
+        if not self.validate_handle_record(record):
+            raise ValueError(f"handle record is not vaild: {record}")
+        print(f"record: {record}")
 
-    def do_process_message(self, data):
+    def create_handle_record(self, data):
         raise NotImplementedError
+
+    def validate_handle_record(self, record):
+        return False
