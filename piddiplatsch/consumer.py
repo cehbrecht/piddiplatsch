@@ -38,4 +38,7 @@ class PIDConsumer:
     def on_message(self, ch, method, properties, body):
         # print(f" [x] {method.routing_key}:{body}")
         p = get_message_processor(self.type)
-        p.process_message(body)
+        try:
+            p.process_message(body)
+        except ValueError as e:
+            print(f"message processing failed: {e}")
