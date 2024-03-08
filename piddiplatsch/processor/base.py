@@ -4,7 +4,9 @@ import json
 class MessageProcessor:
     def process_message(self, message):
         data = json.loads(message)
-        self.do_process_message(data)
+        print(f"We got a message: {data}")
+        record = self.create_handle_record(data)
+        print(record)
 
-    def do_process_message(self, data):
+    def create_handle_record(self, data):
         raise NotImplementedError
