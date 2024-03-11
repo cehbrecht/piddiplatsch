@@ -10,7 +10,7 @@ with open("README.md") as readme_file:
 with open("HISTORY.md") as history_file:
     history = history_file.read()
 
-requirements = ["Click>=7.0", "pika>=1.3.1"]
+requirements = [line.strip() for line in open("requirements.txt")]
 
 test_requirements = [
     "pytest>=3",
