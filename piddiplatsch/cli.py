@@ -40,7 +40,7 @@ def consume(ctx, host, exchange):
 @click.pass_context
 @click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
 @click.option("--exchange", "-e", default="pids", help="The exchange topic.")
-@click.option("--routing_key", "-k", default="pids.wdcc", help="The routing key.")
+@click.option("--routing_key", "-k", default="wdcc.test", help="The routing key.")
 @click.option(
     "--message", "-m", default="Hello World", help="A message you like to send."
 )
