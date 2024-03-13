@@ -3,6 +3,9 @@ from piddiplatsch.processor.base import MessageProcessor
 
 class CMIP6Processor(MessageProcessor):
 
+    def configure(self):
+        self._binding_key = "cmip6.#"
+
     def create_handle_record(self, data):
         # http://fox.cloud.dkrz.de:8000/api/handles/21.14100/77b13123-f172-483c-a53b-2ee7686aa437
         record = {

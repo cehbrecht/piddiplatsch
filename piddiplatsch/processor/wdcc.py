@@ -7,6 +7,8 @@ KERNEL_INFORMATION_PROFILE = (
 
 
 class WDCCProcessor(MessageProcessor):
+    def configure(self):
+        self._binding_key = "wdcc.#"
 
     def create_handle_record(self, data):
         # http://fox.cloud.dkrz.de:8006/api/handles/21.14106/81D6053E36D55F4D41C1E5757684A35BB9BCEB0F

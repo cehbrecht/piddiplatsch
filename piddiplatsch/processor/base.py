@@ -9,6 +9,28 @@ LOGGER = logging.getLogger("piddiplatsch")
 class MessageProcessor:
     def __init__(self) -> None:
         self.pid_maker = PidMaker()
+        self._binding_key = None
+        self.configure()
+
+    def configure(self):
+        raise NotImplementedError
+
+    @property
+    def queue_name(self):
+        return f"queue_{self.binding_key}"
+
+    @property
+    def binding_key(self):
+        return self._binding_key
+
+    def on_message(self, ch, method, properties, body):
+        LOGGER.info(f"consume routing key: {method.routing_key}")
+        try:
+            self.process_message(body)
+        except Exception:
+            LOGGER.exception(f"message processing failed")
+        else:
+            ch.basic_ack(delivery_tag=method.delivery_tag)
 
     def process_message(self, message):
         data = json.loads(message)
