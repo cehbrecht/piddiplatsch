@@ -51,14 +51,16 @@ class PIDConsumer:
         LOGGER.info("Waiting for messages. To exit press CTRL+C")
 
         self.channel.basic_consume(
-            queue=self.queue, on_message_callback=self.on_message, auto_ack=True
+            queue=self.queue, on_message_callback=self.on_message, auto_ack=False
         )
         self.channel.start_consuming()
 
     def on_message(self, ch, method, properties, body):
-        print(f" [x] {method.routing_key}")
+        LOGGER.info(f"consume routing key: {method.routing_key}")
         p = get_message_processor(method.routing_key)
         try:
             p.process_message(body)
-        except ValueError as e:
-            print(f"message processing failed: {e}")
+        except Exception:
+            LOGGER.exception(f"message processing failed")
+        else:
+            self.channel.basic_ack(delivery_tag=method.delivery_tag)
