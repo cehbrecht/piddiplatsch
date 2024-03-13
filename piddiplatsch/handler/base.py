@@ -6,7 +6,7 @@ import logging
 LOGGER = logging.getLogger("piddiplatsch")
 
 
-class MessageProcessor:
+class MessageHandler:
     def __init__(self) -> None:
         self.pid_maker = PidMaker()
         self._binding_key = None

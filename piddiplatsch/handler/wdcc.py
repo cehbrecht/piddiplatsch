@@ -1,4 +1,4 @@
-from piddiplatsch.processor.base import MessageProcessor
+from piddiplatsch.handler.base import MessageHandler
 
 
 KERNEL_INFORMATION_PROFILE = (
@@ -6,7 +6,7 @@ KERNEL_INFORMATION_PROFILE = (
 )
 
 
-class WDCCProcessor(MessageProcessor):
+class WDCCHandler(MessageHandler):
     def configure(self):
         self._binding_key = "wdcc.#"
 

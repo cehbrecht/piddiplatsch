@@ -1,7 +1,7 @@
-from piddiplatsch.processor.base import MessageProcessor
+from piddiplatsch.handler.base import MessageHandler
 
 
-class CMIP6Processor(MessageProcessor):
+class CMIP6Handler(MessageHandler):
 
     def configure(self):
         self._binding_key = "cmip6.#"
