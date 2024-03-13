@@ -8,9 +8,10 @@ KERNEL_INFORMATION_PROFILE = (
 
 class WDCCHandler(MessageHandler):
     def configure(self):
+        self._prefix = "21.14106"
         self._binding_key = "wdcc.#"
 
-    def create_handle_record(self, data):
+    def create_handle_record(self, handle, data):
         # http://fox.cloud.dkrz.de:8006/api/handles/21.14106/81D6053E36D55F4D41C1E5757684A35BB9BCEB0F
         record = {
             "URL": "https://www.wdc-climate.de/ui/entry?acronym=MXELv6MOOrsntds111v120627",
@@ -23,7 +24,9 @@ class WDCCHandler(MessageHandler):
         }
         return record
 
-    def validate_handle_record(self, record):
+    def validate(self, handle, record):
+        if not handle.startswith(self.prefix):
+            return False
         title = record.get("TITLE") or ""
         if len(title) < 3:
             return False

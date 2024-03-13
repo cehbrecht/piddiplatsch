@@ -32,6 +32,12 @@ class PIDConsumer:
         self.exchange = exchange
         self.channel = None
 
+    def create_queue(self, queue_name, binding_key):
+        self.channel.queue_declare(queue_name, exclusive=True)
+        self.channel.queue_bind(
+            exchange=self.exchange, queue=queue_name, routing_key=binding_key
+        )
+
     def open_connection(self, host):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
         self.channel = connection.channel()
@@ -40,12 +46,6 @@ class PIDConsumer:
 
         for handler in all_handlers():
             self.create_queue(handler.queue_name, handler.binding_key)
-
-    def create_queue(self, queue_name, binding_key):
-        self.channel.queue_declare(queue_name, exclusive=True)
-        self.channel.queue_bind(
-            exchange=self.exchange, queue=queue_name, routing_key=binding_key
-        )
 
     def start_consuming(self):
         LOGGER.info("Waiting for messages. To exit press CTRL+C")
