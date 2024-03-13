@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import pika
 import json
-import uuid
 
 
 def send_topic(host, exchange, routing_key, title=None):
@@ -26,18 +25,14 @@ def build_message(routing_key, title):
 
 
 def build_wdcc_message(title):
-    prefix = "21.14106"
-    x = str(uuid.uuid4())
-    handle = f"{prefix}/{x}"
-
     message = {
-        "handle": handle,
-        "url_landing_page": "https://www.dkrz.de",
-        "is_part_of": "hdl:21.14106/bla",
-        "publisher": "WDCC at DKRZ",
+        # "handle": handle,
+        # "url_landing_page": "https://www.dkrz.de",
+        # "is_part_of": "hdl:21.14106/bla",
+        # "publisher": "WDCC at DKRZ",
         "aggregation_level": "dataset",
         "title": title,
-        "entry_id": "blabliblu",
+        # "entry_id": "blabliblu",
     }
     return message
 
