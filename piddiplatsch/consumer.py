@@ -1,6 +1,6 @@
 import pika
 
-from piddiplatsch.handler import all_message_handlers
+from piddiplatsch.handler import all_handlers
 
 import logging
 
@@ -38,7 +38,7 @@ class PIDConsumer:
 
         self.channel.exchange_declare(exchange=self.exchange, exchange_type="topic")
 
-        for handler in all_message_handlers():
+        for handler in all_handlers():
             self.create_queue(handler.queue_name, handler.binding_key)
 
     def create_queue(self, queue_name, binding_key):
@@ -50,7 +50,7 @@ class PIDConsumer:
     def start_consuming(self):
         LOGGER.info("Waiting for messages. To exit press CTRL+C")
 
-        for handler in all_message_handlers():
+        for handler in all_handlers():
             self.channel.basic_consume(
                 queue=handler.queue_name,
                 on_message_callback=handler.on_message,
