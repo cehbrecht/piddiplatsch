@@ -1,5 +1,7 @@
 import json
 import uuid
+from jsonschema import validate
+from jsonschema import Draft202012Validator
 from piddiplatsch.pidmaker import PidMaker
 
 import logging
@@ -13,6 +15,7 @@ class MessageHandler:
         self._identifier = None
         self._prefix = None
         self._binding_key = None
+        self._schema = None
         self.configure()
 
     def configure(self):
@@ -34,6 +37,10 @@ class MessageHandler:
     def binding_key(self):
         return self._binding_key
 
+    @property
+    def schema(self):
+        return self._schema
+
     def on_message(self, ch, method, properties, body):
         LOGGER.info(f"consume routing key: {method.routing_key}")
         try:
@@ -48,10 +55,7 @@ class MessageHandler:
         LOGGER.info(f"We got a message: {data}")
         handle = self.create_handle(data)
         record = self.create_handle_record(handle, data)
-        if not self.validate(handle, record):
-            raise ValueError(
-                f"handle record is not vaild: handle={handle}, record={record}"
-            )
+        self.validate(record)
         self.pid_maker.create_handle(handle, record)
 
     def create_handle(self, data):
@@ -71,5 +75,9 @@ class MessageHandler:
     def create_handle_record(self, handle, data):
         raise NotImplementedError
 
-    def validate(self, handle, record):
-        return False
+    def validate(self, record):
+        validate(
+            record,
+            schema=self.schema,
+            format_checker=Draft202012Validator.FORMAT_CHECKER,
+        )

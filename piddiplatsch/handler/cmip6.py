@@ -24,11 +24,3 @@ class CMIP6Handler(MessageHandler):
             # "URL_REPLICA": "http://esgf3.dkrz.de/thredds/fileServer/cmip6/CMIP/IPSL/IPSL-CM6A-LR/1pctCO2/r1i1p1f1/Eday/wap/gr/v20180727/wap_Eday_IPSL-CM6A-LR_1pctCO2_r1i1p1f1_gr_18500101-18891231.nc",
         }
         return record
-
-    def validate(self, handle, record):
-        if not handle.startswith(self.prefix):
-            return False
-        filename = record.get("FILE_NAME") or ""
-        if len(filename) < 3:
-            return False
-        return True
