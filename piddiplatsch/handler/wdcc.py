@@ -54,7 +54,7 @@ class WDCCHandler(MessageHandler):
         self._binding_key = "wdcc.#"
         self._schema = SCHEMA
 
-    def create_handle_record(self, handle, data):
+    def map(self, handle, data):
         # http://fox.cloud.dkrz.de:8006/api/handles/21.14106/81D6053E36D55F4D41C1E5757684A35BB9BCEB0F
         record = {
             "URL": "https://www.wdc-climate.de/ui/entry?acronym=MXELv6MOOrsntds111v120627",

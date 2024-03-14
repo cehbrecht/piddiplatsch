@@ -54,11 +54,11 @@ class CMIP6Handler(MessageHandler):
         self._binding_key = "cmip6.#"
         self._schema = SCHEMA
 
-    def create_handle_record(self, handle, data):
+    def map(self, handle, data):
         # http://fox.cloud.dkrz.de:8000/api/handles/21.14100/77b13123-f172-483c-a53b-2ee7686aa437
         record = {
             "URL": f"https://handle-esgf.dkrz.de/lp/{handle}",
-            "AGGREGATION_LEVEL": data.get("aggregation_level") or "FILE",
+            "AGGREGATION_LEVEL": data.get("aggregation_level"),
             # "FILE_NAME": "wap_Eday_IPSL-CM6A-LR_1pctCO2_r1i1p1f1_gr_18500101-18891231.nc",
             "FILE_NAME": data.get("file_name"),
             # "FILE_SIZE": "18028171468",

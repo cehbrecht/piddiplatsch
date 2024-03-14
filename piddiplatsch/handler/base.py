@@ -54,7 +54,7 @@ class MessageHandler:
         data = json.loads(message)
         LOGGER.info(f"We got a message: {data}")
         handle = self.create_handle(data)
-        record = self.create_handle_record(handle, data)
+        record = self.map(handle, data)
         self.validate(record)
         self.pid_maker.create_handle(handle, record)
 
@@ -72,7 +72,7 @@ class MessageHandler:
         handle = f"{self.prefix}/{suffix}"
         return handle
 
-    def create_handle_record(self, handle, data):
+    def map(self, handle, data):
         raise NotImplementedError
 
     def validate(self, record):
