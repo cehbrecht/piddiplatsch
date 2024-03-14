@@ -5,6 +5,8 @@ KERNEL_INFORMATION_PROFILE = (
     "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523"
 )
 
+AGGREGATION_LEVELS = ["dataset", "dataset_collection"]
+PUBLISHERS = ["WDCC at DKRZ", "DOKU at DKRZ"]
 
 SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -17,8 +19,11 @@ SCHEMA = {
             "type": "string",
             "format": "uri",
         },
-        "AGGREGATION_LEVEL": {"description": "Type of entity.", "type": "string"},
-        "PUBLISHER": {"type": "string"},
+        "AGGREGATION_LEVEL": {
+            "description": "Type of entity.",
+            "enum": AGGREGATION_LEVELS,
+        },
+        "PUBLISHER": {"enum": PUBLISHERS},
         "TITLE": {
             "type": "string",
             "minLength": 1,
