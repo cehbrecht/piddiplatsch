@@ -22,13 +22,21 @@ def cli(ctx):
 
 @cli.command()
 @click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
-@click.option("--port", "-p", default="5672", help="The rabbitmq port.")
+@click.option("--port", "-p", type=int, default="5672", help="The rabbitmq port.")
 @click.option("--exchange", "-e", default="pids", help="The exchange topic.")
+@click.option(
+    "--handler",
+    "-P",
+    type=click.Choice(["all", "wdcc", "cmip6"], case_sensitive=False),
+    multiple=True,
+    default=["all"],
+    help="Choose which handlers should be used.",
+)
 @click.pass_context
-def consume(ctx, host, port, exchange):
+def consume(ctx, host, port, exchange, handler):
     click.echo("Starting consumer ...")
     try:
-        do_consume(host, port, exchange)
+        do_consume(host, port, exchange, handler)
     except KeyboardInterrupt:
         print("Interrupted")
         try:
@@ -40,7 +48,7 @@ def consume(ctx, host, port, exchange):
 @cli.command()
 @click.pass_context
 @click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
-@click.option("--port", "-p", default="5672", help="The rabbitmq port.")
+@click.option("--port", "-p", type=int, default="5672", help="The rabbitmq port.")
 @click.option("--exchange", "-e", default="pids", help="The exchange topic.")
 @click.option("--routing_key", "-k", default="wdcc.test", help="The routing key.")
 @click.option(

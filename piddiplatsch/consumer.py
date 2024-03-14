@@ -1,6 +1,6 @@
 import pika
 
-from piddiplatsch.handler import all_handlers
+from piddiplatsch.handler import filter_handlers
 
 import logging
 
@@ -21,16 +21,17 @@ LOGGER.setLevel(logging.INFO)
 LOGGER.addHandler(logging_handler())
 
 
-def do_consume(host, port, exchange):
-    c = PIDConsumer(exchange)
+def do_consume(host, port, exchange, handlers):
+    c = PIDConsumer(exchange, handlers)
     c.open_connection(host, port)
     c.start_consuming()
 
 
 class PIDConsumer:
-    def __init__(self, exchange):
+    def __init__(self, exchange, handlers):
         self.exchange = exchange
         self.channel = None
+        self.enabled_handlers = filter_handlers(handlers)
 
     def create_queue(self, queue_name, binding_key):
         self.channel.queue_declare(queue_name, exclusive=True)
@@ -46,13 +47,13 @@ class PIDConsumer:
 
         self.channel.exchange_declare(exchange=self.exchange, exchange_type="topic")
 
-        for handler in all_handlers():
+        for handler in self.enabled_handlers:
             self.create_queue(handler.queue_name, handler.binding_key)
 
     def start_consuming(self):
         LOGGER.info("Waiting for messages. To exit press CTRL+C")
 
-        for handler in all_handlers():
+        for handler in self.enabled_handlers:
             self.channel.basic_consume(
                 queue=handler.queue_name,
                 on_message_callback=handler.on_message,

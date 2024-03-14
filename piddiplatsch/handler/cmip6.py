@@ -4,6 +4,7 @@ from piddiplatsch.handler.base import MessageHandler
 class CMIP6Handler(MessageHandler):
 
     def configure(self):
+        self._identifier = "cmip6"
         self._prefix = "21.14100"
         self._binding_key = "cmip6.#"
 

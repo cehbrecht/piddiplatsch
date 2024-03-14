@@ -10,12 +10,17 @@ LOGGER = logging.getLogger("piddiplatsch")
 class MessageHandler:
     def __init__(self) -> None:
         self.pid_maker = PidMaker()
+        self._identifier = None
         self._prefix = None
         self._binding_key = None
         self.configure()
 
     def configure(self):
         raise NotImplementedError
+
+    @property
+    def identifier(self):
+        return self._identifier
 
     @property
     def prefix(self):

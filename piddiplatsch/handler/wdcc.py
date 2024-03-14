@@ -8,6 +8,7 @@ KERNEL_INFORMATION_PROFILE = (
 
 class WDCCHandler(MessageHandler):
     def configure(self):
+        self._identifier = "wdcc"
         self._prefix = "21.14106"
         self._binding_key = "wdcc.#"
 
