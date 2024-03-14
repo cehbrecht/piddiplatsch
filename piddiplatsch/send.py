@@ -3,8 +3,10 @@ import pika
 import json
 
 
-def send_topic(host, exchange, routing_key, title=None):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
+def send_topic(host, port, exchange, routing_key, title=None):
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host=host, port=port)
+    )
     channel = connection.channel()
 
     channel.exchange_declare(exchange=exchange, exchange_type="topic")
@@ -12,7 +14,7 @@ def send_topic(host, exchange, routing_key, title=None):
     message = build_message(routing_key, title)
     data = json.dumps(message)
     channel.basic_publish(exchange=exchange, routing_key=routing_key, body=data)
-    print(f" [x] Sent {routing_key}:{message}")
+    print(f"Sent {routing_key}:{message}")
     connection.close()
 
 
@@ -21,6 +23,8 @@ def build_message(routing_key, title):
         msg = build_wdcc_message(title)
     elif routing_key.startswith("cmip6"):
         msg = build_cmip6_message(title)
+    else:
+        msg = ""
     return msg
 
 

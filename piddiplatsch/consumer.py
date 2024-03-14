@@ -21,9 +21,9 @@ LOGGER.setLevel(logging.INFO)
 LOGGER.addHandler(logging_handler())
 
 
-def do_consume(host, exchange):
+def do_consume(host, port, exchange):
     c = PIDConsumer(exchange)
-    c.open_connection(host)
+    c.open_connection(host, port)
     c.start_consuming()
 
 
@@ -38,8 +38,10 @@ class PIDConsumer:
             exchange=self.exchange, queue=queue_name, routing_key=binding_key
         )
 
-    def open_connection(self, host):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
+    def open_connection(self, host, port):
+        connection = pika.BlockingConnection(
+            pika.ConnectionParameters(host=host, port=port)
+        )
         self.channel = connection.channel()
 
         self.channel.exchange_declare(exchange=self.exchange, exchange_type="topic")

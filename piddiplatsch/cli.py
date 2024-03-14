@@ -22,12 +22,13 @@ def cli(ctx):
 
 @cli.command()
 @click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
+@click.option("--port", "-p", default="5672", help="The rabbitmq port.")
 @click.option("--exchange", "-e", default="pids", help="The exchange topic.")
 @click.pass_context
-def consume(ctx, host, exchange):
+def consume(ctx, host, port, exchange):
     click.echo("Starting consumer ...")
     try:
-        do_consume(host, exchange)
+        do_consume(host, port, exchange)
     except KeyboardInterrupt:
         print("Interrupted")
         try:
@@ -39,14 +40,15 @@ def consume(ctx, host, exchange):
 @cli.command()
 @click.pass_context
 @click.option("--host", "-H", default="localhost", help="The rabbitmq hostname.")
+@click.option("--port", "-p", default="5672", help="The rabbitmq port.")
 @click.option("--exchange", "-e", default="pids", help="The exchange topic.")
 @click.option("--routing_key", "-k", default="wdcc.test", help="The routing key.")
 @click.option(
     "--message", "-m", default="Hello World", help="A message you like to send."
 )
-def send(ctx, host, exchange, routing_key, message):
+def send(ctx, host, port, exchange, routing_key, message):
     click.echo("Send to queue ...")
-    do_send(host, exchange, routing_key, message)
+    do_send(host, port, exchange, routing_key, message)
 
 
 if __name__ == "__main__":
