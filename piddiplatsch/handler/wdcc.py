@@ -68,6 +68,8 @@ class WDCCHandler(MessageHandler):
             "ENTRY_ID": data.get("entry_id"),
             "KERNEL_INFORMATION_PROFILE": KERNEL_INFORMATION_PROFILE,
         }
+        # TODO: handle flags like
+        # message_json['please_allow_datasets_without_parents']
         return record
 
     def run_checks(self, handle, record):
