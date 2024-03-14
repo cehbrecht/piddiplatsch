@@ -1,5 +1,9 @@
 from piddiplatsch.handler.base import MessageHandler
 
+import logging
+
+LOGGER = logging.getLogger("piddiplatsch")
+
 
 KERNEL_INFORMATION_PROFILE = (
     "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523"
@@ -65,3 +69,21 @@ class WDCCHandler(MessageHandler):
             "KERNEL_INFORMATION_PROFILE": KERNEL_INFORMATION_PROFILE,
         }
         return record
+
+    def run_checks(self, handle, record):
+        self.check_parent(handle, record)
+
+    def check_parent(self, handle, record):
+        parent = record.get("IS_PART_OF")
+        if not parent:
+            return
+        ok = self.pid_maker.check_if_handle_exists(parent)
+        if ok:
+            return
+        if parent.startswith("doi:"):
+            msg = f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
+            LOGGER.error(msg)
+            raise ValueError(msg)
+        elif parent.startswith("hdl:"):
+            msg = f'Handle {handle}: Parent is a handle and does not exist (yet?): "{parent}".'
+            LOGGER.warn(msg)

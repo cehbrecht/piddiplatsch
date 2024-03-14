@@ -54,13 +54,14 @@ class MessageHandler:
     def process_message(self, message):
         data = json.loads(message)
         LOGGER.info(f"We got a message: {data}")
-        handle = self.create_handle(data)
+        handle = self.get_handle(data)
         self.validate_handle(handle)
         record = self.map(handle, data)
         self.validate(record)
+        self.run_checks(handle, record)
         self.pid_maker.create_handle(handle, record)
 
-    def create_handle(self, data):
+    def get_handle(self, data):
         if "handle" in data:
             handle = data.get("handle")
             handle = handle.lstrip("hdl:")
@@ -86,3 +87,6 @@ class MessageHandler:
             schema=self.schema,
             format_checker=Draft202012Validator.FORMAT_CHECKER,
         )
+
+    def run_checks(self, handle, record):
+        pass

@@ -37,6 +37,7 @@ def build_wdcc_message(name):
         "aggregation_level": "dataset",
         "title": name,
         "entry_id": "2426195",
+        "please_allow_datasets_without_parents": False,
     }
     return message
 
