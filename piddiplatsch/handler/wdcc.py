@@ -76,14 +76,18 @@ class WDCCHandler(MessageHandler):
     def check_parent(self, handle, record):
         parent = record.get("IS_PART_OF")
         if not parent:
-            return
-        ok = self.pid_maker.check_if_handle_exists(parent)
-        if ok:
-            return
-        if parent.startswith("doi:"):
-            msg = f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
-            LOGGER.error(msg)
-            raise ValueError(msg)
-        elif parent.startswith("hdl:"):
-            msg = f'Handle {handle}: Parent is a handle and does not exist (yet?): "{parent}".'
-            LOGGER.warn(msg)
+            agg_level = record["AGGREGATION_LEVEL"]
+            if agg_level == "dataset":
+                msg = f'Handle {handle}: "is_part_of" is empty. Entities of type "dataset" must have a parent!'
+                LOGGER.error(msg)
+                raise ValueError(msg)
+        else:
+            ok = self.pid_maker.check_if_handle_exists(parent)
+            if not ok:
+                if parent.startswith("doi:"):
+                    msg = f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
+                    LOGGER.error(msg)
+                    raise ValueError(msg)
+                elif parent.startswith("hdl:"):
+                    msg = f'Handle {handle}: Parent is a handle and does not exist (yet?): "{parent}".'
+                    LOGGER.warn(msg)
