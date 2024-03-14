@@ -28,15 +28,15 @@ def build_message(routing_key, title):
     return msg
 
 
-def build_wdcc_message(title):
+def build_wdcc_message(name):
     message = {
         # "handle": handle,
-        # "url_landing_page": "https://www.dkrz.de",
-        # "is_part_of": "hdl:21.14106/bla",
-        # "publisher": "WDCC at DKRZ",
+        "url_landing_page": f"https://www.wdc-climate.de/ui/entry?acronym={name}",
+        "is_part_of": f"hdl:21.14106/test_{name}",
+        "publisher": "WDCC at DKRZ",
         "aggregation_level": "dataset",
-        "title": title,
-        # "entry_id": "blabliblu",
+        "title": name,
+        "entry_id": "2426195",
     }
     return message
 
