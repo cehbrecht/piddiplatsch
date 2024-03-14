@@ -45,5 +45,12 @@ def build_cmip6_message(name):
     message = {
         "aggregation_level": "FILE",
         "file_name": f"{name}.nc",
+        "file_size": 18028171468,
+        "file_version": 1,
+        "checksum": "312cb59854334b340d4d046310d028d08e0e71cfaa31ac031b383e1008594d42",
+        "checksum_method": "SHA256",
+        "is_part_of": "hdl:21.14100/37528ff1-2653-3c50-b670-7c00ba96fd6e",
+        "url_original_data": f"http://vesg.ipsl.upmc.fr/thredds/fileServer/cmip6/{name}.nc",
+        "url_replica": f"http://esgf3.dkrz.de/thredds/fileServer/cmip6/{name}.nc",
     }
     return message
