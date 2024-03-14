@@ -2,6 +2,7 @@ import json
 import uuid
 from jsonschema import validate
 from jsonschema import Draft202012Validator
+import pyhandle
 from piddiplatsch.pidmaker import PidMaker
 
 import logging
@@ -54,6 +55,7 @@ class MessageHandler:
         data = json.loads(message)
         LOGGER.info(f"We got a message: {data}")
         handle = self.create_handle(data)
+        self.validate_handle(handle)
         record = self.map(handle, data)
         self.validate(record)
         self.pid_maker.create_handle(handle, record)
@@ -71,6 +73,9 @@ class MessageHandler:
             suffix = str(uuid.uuid4())
         handle = f"{self.prefix}/{suffix}"
         return handle
+
+    def validate_handle(self, handle):
+        pyhandle.utilhandle.check_handle_syntax(handle)
 
     def map(self, handle, data):
         raise NotImplementedError
