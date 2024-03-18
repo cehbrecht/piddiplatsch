@@ -95,4 +95,9 @@ class CMIP6Handler(MessageHandler):
             "URL_ORIGINAL_DATA": data.get("url_original_data"),
             "URL_REPLICA": data.get("url_replica"),
         }
+        # remove empty values
+        for key in list(record.keys()):
+            value = record[key]
+            if not value:
+                del record[key]
         return record
