@@ -1,7 +1,7 @@
 from piddiplatsch.handler.base import MessageHandler
 
 AGGREGATION_LEVELS = ["FILE", "DATASET"]
-CHECKSUM_METHODS = ["MD5"]
+CHECKSUM_METHODS = ["MD5", "SHA256"]
 
 
 SCHEMA = {
