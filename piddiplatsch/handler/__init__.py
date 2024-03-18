@@ -7,3 +7,17 @@ HANDLERS = [WDCCHandler(), CMIP6Handler()]
 
 def all_handlers():
     return HANDLERS
+
+
+def filter_handlers(handlers):
+    # compare lowercase
+    handlers = [h.lower() for h in handlers]
+    # enable all handlers?
+    if "all" in handlers:
+        return all_handlers()
+    # enable selected handlers
+    enabled = []
+    for h in all_handlers():
+        if h.identifier.lower() in handlers:
+            enabled.append(h)
+    return enabled

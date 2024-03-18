@@ -1,5 +1,8 @@
 import json
 import uuid
+from jsonschema import validate
+from jsonschema import Draft202012Validator
+import pyhandle
 from piddiplatsch.pidmaker import PidMaker
 
 import logging
@@ -10,12 +13,18 @@ LOGGER = logging.getLogger("piddiplatsch")
 class MessageHandler:
     def __init__(self) -> None:
         self.pid_maker = PidMaker()
+        self._identifier = None
         self._prefix = None
         self._binding_key = None
+        self._schema = None
         self.configure()
 
     def configure(self):
         raise NotImplementedError
+
+    @property
+    def identifier(self):
+        return self._identifier
 
     @property
     def prefix(self):
@@ -29,6 +38,10 @@ class MessageHandler:
     def binding_key(self):
         return self._binding_key
 
+    @property
+    def schema(self):
+        return self._schema
+
     def on_message(self, ch, method, properties, body):
         LOGGER.info(f"consume routing key: {method.routing_key}")
         try:
@@ -41,15 +54,14 @@ class MessageHandler:
     def process_message(self, message):
         data = json.loads(message)
         LOGGER.info(f"We got a message: {data}")
-        handle = self.create_handle(data)
-        record = self.create_handle_record(handle, data)
-        if not self.validate(handle, record):
-            raise ValueError(
-                f"handle record is not vaild: handle={handle}, record={record}"
-            )
+        handle = self.get_handle(data)
+        self.validate_handle(handle)
+        record = self.map(handle, data)
+        self.validate(record)
+        self.run_checks(handle, record)
         self.pid_maker.create_handle(handle, record)
 
-    def create_handle(self, data):
+    def get_handle(self, data):
         if "handle" in data:
             handle = data.get("handle")
             handle = handle.lstrip("hdl:")
@@ -63,8 +75,18 @@ class MessageHandler:
         handle = f"{self.prefix}/{suffix}"
         return handle
 
-    def create_handle_record(self, handle, data):
+    def validate_handle(self, handle):
+        pyhandle.utilhandle.check_handle_syntax(handle)
+
+    def map(self, handle, data):
         raise NotImplementedError
 
-    def validate(self, handle, record):
-        return False
+    def validate(self, record):
+        validate(
+            record,
+            schema=self.schema,
+            format_checker=Draft202012Validator.FORMAT_CHECKER,
+        )
+
+    def run_checks(self, handle, record):
+        pass
