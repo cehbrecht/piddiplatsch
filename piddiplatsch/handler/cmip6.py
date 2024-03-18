@@ -1,6 +1,8 @@
 from piddiplatsch.handler.base import MessageHandler
 
 AGGREGATION_LEVELS = ["FILE", "DATASET"]
+CHECKSUM_METHODS = ["MD5"]
+
 
 SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -8,10 +10,9 @@ SCHEMA = {
     "description": "A handle record schema for WDCC.",
     "type": "object",
     "properties": {
-        "URL": {
-            "description": "URL of the landing page",
+        "HANDLE": {
+            "description": "Handle identifier. Example: 21.T14996/TESTCASE100",
             "type": "string",
-            "format": "uri",
         },
         "AGGREGATION_LEVEL": {"enum": AGGREGATION_LEVELS},
         "FILE_NAME": {
@@ -28,7 +29,13 @@ SCHEMA = {
             "minimum": 0,
         },
         "CHECKSUM": {"type": "string"},
-        "CHECKSUM_METHOD": {"type": "string"},
+        "CHECKSUM_METHOD": {"enum": CHECKSUM_METHODS},
+        "FIXED_CONTENT": {"type": "boolean"},
+        "URL": {
+            "description": "URL of the landing page",
+            "type": "string",
+            "format": "uri",
+        },
         "URL_ORIGINAL_DATA": {
             "type": "string",
             "format": "uri",
@@ -40,6 +47,27 @@ SCHEMA = {
         "IS_PART_OF": {
             "type": "string",
             "format": "uri",
+        },
+        "DRS_ID": {
+            "type": "string",
+        },
+        "VERSION_NUMBER": {
+            "type": "string",
+        },
+        "HOSTING_NODE": {
+            "type": "string",
+        },
+        "REPLICA_NODE": {
+            "type": "string",
+        },
+        "HAS_PARTS": {
+            "type": "string",
+        },
+        "REPLACES": {
+            "type": "string",
+        },
+        "REPLACED_BY": {
+            "type": "string",
         },
     },
     "required": ["URL", "AGGREGATION_LEVEL", "FILE_NAME"],
