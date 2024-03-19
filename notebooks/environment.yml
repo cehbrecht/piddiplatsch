@@ -3,5 +3,6 @@ channels:
 - conda-forge
 dependencies:
 - pip
-- python >=3.9,<3.11
+- python >=3.10,<3.11
 - jupyterlab
+- pydantic
