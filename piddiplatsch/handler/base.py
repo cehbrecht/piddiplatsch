@@ -1,6 +1,6 @@
 import json
 import uuid
-import pkg_resources
+from pathlib import Path
 from jsonschema import validate
 from jsonschema import Draft202012Validator
 import pyhandle
@@ -46,11 +46,10 @@ class MessageHandler:
         return self._schema
 
     def load_schema(self):
-        schema_path = pkg_resources.resource_filename(
-            __name__, f"../../schema/{self.identifier}.json"
+        schema_path = (
+            Path(__file__).parent.parent.parent / "schema" / f"{self.identifier}.json"
         )
-
-        with open(schema_path, "r") as schema_file:
+        with open(schema_path) as schema_file:
             self._schema = json.load(schema_file)
 
     def on_message(self, ch, method, properties, body):
