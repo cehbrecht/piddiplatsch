@@ -1,5 +1,6 @@
 import json
 import uuid
+import pkg_resources
 from jsonschema import validate
 from jsonschema import Draft202012Validator
 import pyhandle
@@ -40,7 +41,17 @@ class MessageHandler:
 
     @property
     def schema(self):
+        if not self._schema:
+            self.load_schema()
         return self._schema
+
+    def load_schema(self):
+        schema_path = pkg_resources.resource_filename(
+            __name__, f"../schema/{self.identifier}.json"
+        )
+
+        with open(schema_path, "r") as schema_file:
+            self._schema = json.load(schema_file)
 
     def on_message(self, ch, method, properties, body):
         LOGGER.info(f"consume routing key: {method.routing_key}")
