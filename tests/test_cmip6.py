@@ -43,7 +43,7 @@ def test_cmip6_map_file_missing_file_name():
     }
     data = json.dumps(msg)
 
-    with pytest.raises(Exception) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         handler.process_message(data)
     assert "'FILE_NAME' is a required property" in str(excinfo.value)
 
@@ -78,6 +78,6 @@ def test_cmip6_map_dataset_missing_drs_id():
     }
     data = json.dumps(msg)
 
-    with pytest.raises(Exception) as excinfo:
+    with pytest.raises(ValidationError) as excinfo:
         handler.process_message(data)
     assert "'DRS_ID' is a required property" in str(excinfo.value)

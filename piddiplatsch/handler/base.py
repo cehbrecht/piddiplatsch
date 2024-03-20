@@ -47,7 +47,7 @@ class MessageHandler:
         try:
             self.process_message(body)
         except Exception:
-            LOGGER.exception(f"message processing failed")
+            LOGGER.exception("message processing failed")
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
