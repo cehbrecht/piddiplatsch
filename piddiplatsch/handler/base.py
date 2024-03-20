@@ -1,5 +1,6 @@
 import json
 import uuid
+from pathlib import Path
 from jsonschema import validate
 from jsonschema import Draft202012Validator
 import pyhandle
@@ -40,14 +41,23 @@ class MessageHandler:
 
     @property
     def schema(self):
+        if not self._schema:
+            self.load_schema()
         return self._schema
+
+    def load_schema(self):
+        schema_path = (
+            Path(__file__).parent.parent.parent / "schema" / f"{self.identifier}.json"
+        )
+        with open(schema_path) as schema_file:
+            self._schema = json.load(schema_file)
 
     def on_message(self, ch, method, properties, body):
         LOGGER.info(f"consume routing key: {method.routing_key}")
         try:
             self.process_message(body)
         except Exception:
-            LOGGER.exception(f"message processing failed")
+            LOGGER.exception("message processing failed")
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 

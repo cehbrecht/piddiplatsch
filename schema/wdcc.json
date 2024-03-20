@@ -1,0 +1,54 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "WDCC",
+    "description": "A handle record schema for WDCC.",
+    "type": "object",
+    "properties": {
+        "URL": {
+            "description": "URL of the landing page",
+            "type": "string",
+            "format": "uri"
+        },
+        "AGGREGATION_LEVEL": {
+            "description": "Type of entity.",
+            "enum": [
+                "dataset",
+                "dataset_collection"
+            ],
+            "type": "string"
+        },
+        "PUBLISHER": {
+            "enum": [
+                "WDCC at DKRZ",
+                "DOKU at DKRZ"
+            ],
+            "type": "string"
+        },
+        "TITLE": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+        },
+        "ENTRY_ID": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+        },
+        "IS_PART_OF": {
+            "type": "string",
+            "format": "uri"
+        },
+        "KERNEL_INFORMATION_PROFILE": {
+            "const": "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523",
+            "type": "string",
+            "format": "uri"
+        }
+    },
+    "required": [
+        "URL",
+        "AGGREGATION_LEVEL",
+        "PUBLISHER",
+        "TITLE",
+        "ENTRY_ID"
+    ]
+}
