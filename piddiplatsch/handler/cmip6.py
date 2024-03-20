@@ -1,8 +1,5 @@
 from piddiplatsch.handler.base import MessageHandler
 
-AGGREGATION_LEVELS = ["FILE", "DATASET"]
-CHECKSUM_METHODS = ["MD5", "SHA256"]
-
 
 SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -20,7 +17,7 @@ SCHEMA = {
             "type": "string",
             "format": "uri",
         },
-        "AGGREGATION_LEVEL": {"enum": AGGREGATION_LEVELS},
+        "AGGREGATION_LEVEL": {"enum": ["FILE", "DATASET"], "type": "string"},
     },
     "required": ["URL", "AGGREGATION_LEVEL"],
     "if": {
@@ -42,7 +39,7 @@ SCHEMA = {
                 "minimum": 0,
             },
             "CHECKSUM": {"type": "string"},
-            "CHECKSUM_METHOD": {"enum": CHECKSUM_METHODS},
+            "CHECKSUM_METHOD": {"enum": ["MD5", "SHA256"], "type": "string"},
             "URL_ORIGINAL_DATA": {
                 "type": "string",
                 "format": "uri",
