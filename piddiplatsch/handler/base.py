@@ -95,6 +95,8 @@ class MessageHandler:
     def publish(self, record, dry_run=False):
         handle = record.get("HANDLE")
         if dry_run is True:
-            LOGGER.warn(f"skip publishing (dry-run): handle={handle}, record={record}.")
+            LOGGER.warning(
+                f"skip publishing (dry-run): handle={handle}, record={record}."
+            )
         else:
             self.pid_maker.create_handle(handle, record)
