@@ -1,9 +1,7 @@
 import json
 from pathlib import Path
-from jsonschema import validate
-from jsonschema import Draft202012Validator
-import pyhandle
 from piddiplatsch.pidmaker import PidMaker
+from piddiplatsch.validator import validate
 
 import logging
 
@@ -66,9 +64,6 @@ class MessageHandler:
         record = self.map(data)
         self.publish(record, dry_run)
 
-    def validate_handle(self, handle):
-        pyhandle.utilhandle.check_handle_syntax(handle)
-
     def read(self, message):
         data = json.loads(message)
         return data
@@ -83,11 +78,7 @@ class MessageHandler:
         raise NotImplementedError
 
     def validate(self, record):
-        validate(
-            record,
-            schema=self.schema,
-            format_checker=Draft202012Validator.FORMAT_CHECKER,
-        )
+        validate(record, schema=self.schema)
 
     def run_checks(self, record):
         pass

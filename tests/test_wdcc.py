@@ -1,4 +1,5 @@
 import json
+import copy
 from piddiplatsch.handler import get_handler
 
 TEST_1 = {
@@ -17,6 +18,15 @@ def test_map():
     handler = get_handler("wdcc")
     record = handler.map(TEST_1)
     assert record["AGGREGATION_LEVEL"] == "dataset"
+
+
+def test_map_invalid_handle():
+    handler = get_handler("wdcc")
+    data = copy.deepcopy(TEST_1)
+    data["handle"] = "invalid_handle"
+    record = handler.map(data)
+    assert record["AGGREGATION_LEVEL"] == "dataset"
+    # assert False
 
 
 def test_process_message():
