@@ -39,7 +39,8 @@
             "format": "uri"
         },
         "KERNEL_INFORMATION_PROFILE": {
-            "const": "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523",
+            "$comment": "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523",
+            "const": "https://github.com/cehbrecht/piddiplatsch/raw/main/schema/wdcc.json",
             "type": "string",
             "format": "uri"
         }
