@@ -5,7 +5,7 @@ from piddiplatsch.handler import filter_handlers
 def test_wdcc_map_file():
     handler = filter_handlers(["wdcc"])[0]
     msg = {
-        # "handle": handle,
+        "handle": "hdl:21.14106/test_abc1234",
         "url_landing_page": "https://www.wdc-climate.de/ui/entry?acronym=temperature",
         "is_part_of": "hdl:21.14106/test_temperature",
         "publisher": "WDCC at DKRZ",

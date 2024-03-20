@@ -4,6 +4,10 @@
     "description": "A handle record schema for WDCC.",
     "type": "object",
     "properties": {
+        "HANDLE": {
+            "description": "Handle identifier. Example: 21.T14996/TESTCASE100",
+            "type": "string"
+        },
         "URL": {
             "description": "URL of the landing page",
             "type": "string",

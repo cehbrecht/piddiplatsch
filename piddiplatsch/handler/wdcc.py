@@ -1,4 +1,5 @@
 from piddiplatsch.handler.base import MessageHandler
+from piddiplatsch.tools import map
 
 import logging
 
@@ -11,8 +12,9 @@ class WDCCHandler(MessageHandler):
         self._prefix = "21.14106"
         self._binding_key = "wdcc.#"
 
-    def map(self, handle, data):
+    def map(self, data):
         record = {
+            "HANDLE": map.get_handle(data, self.prefix),
             "URL": data.get("url_landing_page"),
             "AGGREGATION_LEVEL": data.get("aggregation_level"),
             "PUBLISHER": data.get("publisher"),

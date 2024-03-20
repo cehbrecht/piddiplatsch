@@ -1,5 +1,4 @@
 import json
-import uuid
 from pathlib import Path
 from jsonschema import validate
 from jsonschema import Draft202012Validator
@@ -64,31 +63,16 @@ class MessageHandler:
     def process_message(self, message):
         data = json.loads(message)
         LOGGER.info(f"We got a message: {data}")
-        handle = self.get_handle(data)
-        self.validate_handle(handle)
-        record = self.map(handle, data)
+        # self.validate_handle(handle)
+        record = self.map(data)
         self.validate(record)
-        self.run_checks(handle, record)
-        self.pid_maker.create_handle(handle, record)
-
-    def get_handle(self, data):
-        if "handle" in data:
-            handle = data.get("handle")
-            handle = handle.lstrip("hdl:")
-        else:
-            handle = self.generate_handle()
-        return handle
-
-    def generate_handle(self, suffix=None):
-        if not suffix:
-            suffix = str(uuid.uuid4())
-        handle = f"{self.prefix}/{suffix}"
-        return handle
+        # self.run_checks(handle, record)
+        # self.pid_maker.create_handle(handle, record)
 
     def validate_handle(self, handle):
         pyhandle.utilhandle.check_handle_syntax(handle)
 
-    def map(self, handle, data):
+    def map(self, data):
         raise NotImplementedError
 
     def validate(self, record):
