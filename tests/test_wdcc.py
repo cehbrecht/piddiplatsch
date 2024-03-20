@@ -1,5 +1,5 @@
 import json
-from piddiplatsch.handler import filter_handlers
+from piddiplatsch.handler import get_handler
 
 TEST_1 = {
     "handle": "hdl:21.14106/test_abc1234",
@@ -14,12 +14,12 @@ TEST_1 = {
 
 
 def test_map():
-    handler = filter_handlers(["wdcc"])[0]
+    handler = get_handler("wdcc")
     record = handler.map(TEST_1)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
 def test_process_message():
-    handler = filter_handlers(["wdcc"])[0]
+    handler = get_handler("wdcc")
     msg = json.dumps(TEST_1)
     handler.process_message(msg, dry_run=True)

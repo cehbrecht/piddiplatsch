@@ -21,3 +21,11 @@ def filter_handlers(handlers):
         if h.identifier.lower() in handlers:
             enabled.append(h)
     return enabled
+
+
+def get_handler(identifier):
+    handlers = filter_handlers([identifier])
+    handler = None
+    if len(handlers) == 1:
+        handler = handlers[0]
+    return handler

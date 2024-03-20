@@ -1,6 +1,6 @@
 import copy
 import json
-from piddiplatsch.handler import filter_handlers
+from piddiplatsch.handler import get_handler
 from jsonschema.exceptions import ValidationError
 
 import pytest
@@ -33,13 +33,13 @@ TEST_DATASET_1 = {
 
 
 def test_map_file():
-    handler = filter_handlers(["cmip6"])[0]
+    handler = get_handler("cmip6")
     record = handler.map(TEST_FILE_1)
     assert record["AGGREGATION_LEVEL"] == "FILE"
 
 
 def test_map_file_missing_file_name():
-    handler = filter_handlers(["cmip6"])[0]
+    handler = get_handler("cmip6")
     data = copy.deepcopy(TEST_FILE_1)
     del data["file_name"]
 
@@ -49,13 +49,13 @@ def test_map_file_missing_file_name():
 
 
 def test_map_dataset():
-    handler = filter_handlers(["cmip6"])[0]
+    handler = get_handler("cmip6")
     record = handler.map(TEST_DATASET_1)
     assert record["AGGREGATION_LEVEL"] == "DATASET"
 
 
 def test_map_dataset_missing_drs_id():
-    handler = filter_handlers(["cmip6"])[0]
+    handler = get_handler("cmip6")
     data = copy.deepcopy(TEST_DATASET_1)
     del data["drs_id"]
 
@@ -65,6 +65,6 @@ def test_map_dataset_missing_drs_id():
 
 
 def test_process_message_dataset():
-    handler = filter_handlers(["cmip6"])[0]
+    handler = get_handler("cmip6")
     msg = json.dumps(TEST_FILE_1)
     handler.process_message(msg, dry_run=True)
