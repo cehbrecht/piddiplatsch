@@ -1,4 +1,4 @@
-.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint lint/flake8
+.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint
 .DEFAULT_GOAL := help
 
 define BROWSER_PYSCRIPT
@@ -47,16 +47,14 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint/flake8: ## check style with flake8
+lint: ## check style with flake8
 	flake8 piddiplatsch tests
 
-lint: lint/flake8 ## check style
-
 test: ## run tests quickly with the default Python
-	pytest
+	pytest -v -m 'not slow and not online'
 
 test-all: ## run tests on every Python version with tox
-	tox
+	pytest -v
 
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source piddiplatsch -m pytest
@@ -84,4 +82,4 @@ dist: clean ## builds source and wheel package
 	ls -l dist
 
 install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+	pip install -e .
