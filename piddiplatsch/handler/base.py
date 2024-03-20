@@ -60,19 +60,26 @@ class MessageHandler:
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
-    def process_message(self, message):
-        data = json.loads(message)
-        LOGGER.info(f"We got a message: {data}")
-        # self.validate_handle(handle)
+    def process_message(self, message, dry_run=False):
+        LOGGER.info(f"We got a message: {message}")
+        data = self.read(message)
         record = self.map(data)
-        self.validate(record)
-        # self.run_checks(handle, record)
-        # self.pid_maker.create_handle(handle, record)
+        self.publish(record, dry_run)
 
     def validate_handle(self, handle):
         pyhandle.utilhandle.check_handle_syntax(handle)
 
+    def read(self, message):
+        data = json.loads(message)
+        return data
+
     def map(self, data):
+        record = self.do_map(data)
+        self.validate(record)
+        self.run_checks(record)
+        return record
+
+    def do_map(self, data):
         raise NotImplementedError
 
     def validate(self, record):
@@ -82,5 +89,12 @@ class MessageHandler:
             format_checker=Draft202012Validator.FORMAT_CHECKER,
         )
 
-    def run_checks(self, handle, record):
+    def run_checks(self, record):
         pass
+
+    def publish(self, record, dry_run=False):
+        handle = record.get("HANDLE")
+        if dry_run is True:
+            LOGGER.warn(f"skip publishing (dry-run): handle={handle}, record={record}.")
+        else:
+            self.pid_maker.create_handle(handle, record)

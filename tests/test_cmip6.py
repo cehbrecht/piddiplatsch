@@ -1,4 +1,3 @@
-import json
 from piddiplatsch.handler import filter_handlers
 from jsonschema.exceptions import ValidationError
 
@@ -7,7 +6,7 @@ import pytest
 
 def test_cmip6_map_file():
     handler = filter_handlers(["cmip6"])[0]
-    msg = {
+    data = {
         "handle": "21.t14996/testcase100",
         "aggregation_level": "FILE",
         "operation": "publish",
@@ -21,13 +20,13 @@ def test_cmip6_map_file():
         "message_timestamp": "2000-10-10T10:00:00.000000+00:00",
         "parent_dataset": "hdl:21.t14996/cucumber",
     }
-    data = json.dumps(msg)
-    handler.process_message(data)
+    record = handler.map(data)
+    assert record["AGGREGATION_LEVEL"] == "FILE"
 
 
 def test_cmip6_map_file_missing_file_name():
     handler = filter_handlers(["cmip6"])[0]
-    msg = {
+    data = {
         "handle": "21.t14996/testcase100",
         "aggregation_level": "FILE",
         "operation": "publish",
@@ -41,16 +40,15 @@ def test_cmip6_map_file_missing_file_name():
         "message_timestamp": "2000-10-10T10:00:00.000000+00:00",
         "parent_dataset": "hdl:21.t14996/cucumber",
     }
-    data = json.dumps(msg)
 
     with pytest.raises(ValidationError) as excinfo:
-        handler.process_message(data)
+        handler.map(data)
     assert "'FILE_NAME' is a required property" in str(excinfo.value)
 
 
 def test_cmip6_map_dataset():
     handler = filter_handlers(["cmip6"])[0]
-    msg = {
+    data = {
         "handle": "21.t14996/testcase200",
         "aggregation_level": "DATASET",
         "operation": "publish",
@@ -60,13 +58,13 @@ def test_cmip6_map_dataset():
         "files": ["hdl:21.t14996/snake", "hdl:21.t14996/monkey"],
         "message_timestamp": "2000-10-10T10:00:00.000000+00:00",
     }
-    data = json.dumps(msg)
-    handler.process_message(data)
+    record = handler.map(data)
+    assert record["AGGREGATION_LEVEL"] == "DATASET"
 
 
 def test_cmip6_map_dataset_missing_drs_id():
     handler = filter_handlers(["cmip6"])[0]
-    msg = {
+    data = {
         "handle": "21.t14996/testcase200",
         "aggregation_level": "DATASET",
         "operation": "publish",
@@ -76,8 +74,7 @@ def test_cmip6_map_dataset_missing_drs_id():
         "files": ["hdl:21.t14996/snake", "hdl:21.t14996/monkey"],
         "message_timestamp": "2000-10-10T10:00:00.000000+00:00",
     }
-    data = json.dumps(msg)
 
     with pytest.raises(ValidationError) as excinfo:
-        handler.process_message(data)
+        handler.map(data)
     assert "'DRS_ID' is a required property" in str(excinfo.value)

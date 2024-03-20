@@ -9,7 +9,7 @@ class CMIP6Handler(MessageHandler):
         self._prefix = "21.14100"
         self._binding_key = "cmip6.#"
 
-    def map(self, data):
+    def do_map(self, data):
         handle = map.get_handle(data, self.prefix)
         record = {
             "HANDLE": handle,
