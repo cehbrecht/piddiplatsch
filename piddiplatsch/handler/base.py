@@ -47,7 +47,7 @@ class MessageHandler:
 
     def load_schema(self):
         schema_path = pkg_resources.resource_filename(
-            __name__, f"../schema/{self.identifier}.json"
+            __name__, f"../../schema/{self.identifier}.json"
         )
 
         with open(schema_path, "r") as schema_file:
