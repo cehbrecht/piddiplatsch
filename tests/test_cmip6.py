@@ -35,33 +35,37 @@ TEST_DATASET_1 = {
 def test_map_file():
     handler = get_handler("cmip6")
     record = handler.map(TEST_FILE_1)
+    assert record["URL"] == "https://handle-esgf.dkrz.de/lp/21.t14996/testcase100"
     assert record["AGGREGATION_LEVEL"] == "FILE"
 
 
-def test_map_file_missing_file_name():
+def test_map_file_missing_required_fields():
     handler = get_handler("cmip6")
-    data = copy.deepcopy(TEST_FILE_1)
-    del data["file_name"]
+    for field in ["aggregation_level", "file_name"]:
+        data = copy.deepcopy(TEST_FILE_1)
+        del data[field]
 
-    with pytest.raises(ValidationError) as excinfo:
-        handler.map(data)
-    assert "'FILE_NAME' is a required property" in str(excinfo.value)
+        with pytest.raises(ValidationError) as excinfo:
+            handler.map(data)
+        assert "is a required property" in str(excinfo.value)
 
 
 def test_map_dataset():
     handler = get_handler("cmip6")
     record = handler.map(TEST_DATASET_1)
+    assert record["URL"] == "https://handle-esgf.dkrz.de/lp/21.t14996/testcase200"
     assert record["AGGREGATION_LEVEL"] == "DATASET"
 
 
-def test_map_dataset_missing_drs_id():
+def test_map_dataset_missing_required_fields():
     handler = get_handler("cmip6")
-    data = copy.deepcopy(TEST_DATASET_1)
-    del data["drs_id"]
+    for field in ["aggregation_level", "drs_id"]:
+        data = copy.deepcopy(TEST_DATASET_1)
+        del data[field]
 
-    with pytest.raises(ValidationError) as excinfo:
-        handler.map(data)
-    assert "'DRS_ID' is a required property" in str(excinfo.value)
+        with pytest.raises(ValidationError) as excinfo:
+            handler.map(data)
+        assert "is a required property" in str(excinfo.value)
 
 
 def test_process_message_dataset():

@@ -23,7 +23,7 @@ def test_map():
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
-def test_map_required_fields():
+def test_map_missing_required_fields():
     handler = get_handler("wdcc")
     for field in [
         "url_landing_page",
