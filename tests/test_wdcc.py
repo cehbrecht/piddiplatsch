@@ -25,11 +25,18 @@ def test_map():
 
 def test_map_required_fields():
     handler = get_handler("wdcc")
-    data = copy.deepcopy(TEST_1)
-    del data["aggregation_level"]
-    with pytest.raises(ValidationError) as excinfo:
-        handler.map(data)
-    assert "'AGGREGATION_LEVEL' is a required property" in str(excinfo.value)
+    for field in [
+        "url_landing_page",
+        "aggregation_level",
+        "title",
+        "entry_id",
+        "publisher",
+    ]:
+        data = copy.deepcopy(TEST_1)
+        del data[field]
+        with pytest.raises(ValidationError) as excinfo:
+            handler.map(data)
+        assert "is a required property" in str(excinfo.value)
 
 
 def test_map_invalid_handle():
