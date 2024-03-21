@@ -23,12 +23,13 @@ def test_map():
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
-def test_map_missing_fields():
+def test_map_required_fields():
     handler = get_handler("wdcc")
-    data = handler.map(TEST_1)
+    data = copy.deepcopy(TEST_1)
+    del data["aggregation_level"]
     with pytest.raises(ValidationError) as excinfo:
         handler.map(data)
-    # assert "'FILE_NAME' is a required property" in str(excinfo.value)
+    assert "'AGGREGATION_LEVEL' is a required property" in str(excinfo.value)
 
 
 def test_map_invalid_handle():

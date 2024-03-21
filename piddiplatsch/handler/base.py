@@ -8,6 +8,15 @@ import logging
 LOGGER = logging.getLogger("piddiplatsch")
 
 
+def clean(record):
+    # remove empty values
+    for key in list(record.keys()):
+        value = record[key]
+        if not value:
+            del record[key]
+    return record
+
+
 class MessageHandler:
     def __init__(self) -> None:
         self.pid_maker = PidMaker()
@@ -70,6 +79,7 @@ class MessageHandler:
 
     def map(self, data):
         record = self.do_map(data)
+        record = clean(record)
         self.validate(record)
         self.run_checks(record)
         return record

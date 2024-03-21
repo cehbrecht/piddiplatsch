@@ -28,9 +28,4 @@ class CMIP6Handler(MessageHandler):
             "VERSION_NUMBER": data.get("version_number"),
             "HAS_PARTS": data.get("has_parts"),
         }
-        # remove empty values
-        for key in list(record.keys()):
-            value = record[key]
-            if not value:
-                del record[key]
         return record
