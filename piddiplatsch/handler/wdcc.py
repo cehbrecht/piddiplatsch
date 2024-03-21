@@ -1,7 +1,6 @@
 from piddiplatsch.handler.base import MessageHandler
 from piddiplatsch.tools import map
 from piddiplatsch.checker import HandleChecker
-from piddiplatsch.pidmaker import PidMaker
 
 import logging
 
@@ -33,8 +32,7 @@ class WDCCHandler(MessageHandler):
 
 
 @wdcc_checker.checks(name="wdcc_parent")
-def check_parent(record):
-    pid_maker = PidMaker()
+def check_parent(pid_maker, record):
     handle = record.get("HANDLE")
     parent = record.get("IS_PART_OF")
     if parent:

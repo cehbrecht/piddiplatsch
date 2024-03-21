@@ -1,3 +1,6 @@
+from piddiplatsch.pidmaker import PidMaker
+
+
 class HandleChecker:
     checkers = {}
 
@@ -5,6 +8,7 @@ class HandleChecker:
         if names is None:
             names = self.checkers.keys()
         self.checkers = {k: self.checkers[k] for k in names}
+        self.pid_maker = PidMaker()
 
     def __repr__(self):
         return f"<Checker checkers={sorted(self.checkers)}>"
@@ -35,7 +39,7 @@ class HandleChecker:
         func = self.checkers[name]
         result, cause = None, None
         try:
-            result = func(record)
+            result = func(self.pid_maker, record)
         except Exception as e:
             cause = e
         if not result:
@@ -49,10 +53,10 @@ class HandleChecker:
 
 
 @HandleChecker._cls_checks(name="ok")
-def check_ok(record):
+def check_ok(pid_maker, record):
     return True
 
 
 @HandleChecker._cls_checks(name="not_ok")
-def check_not_ok(record):
+def check_not_ok(pid_maker, record):
     return False
