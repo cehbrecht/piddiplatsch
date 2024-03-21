@@ -28,7 +28,10 @@ class DummyClient(BaseClient):
         LOGGER.info(f"record: {record}")
 
     def check_if_handle_exists(self, handle):
-        LOGGER.info(f"handle exists: {handle}")
+        if not handle:
+            return False
+        elif "invalid" in handle:
+            return False
         return True
 
 
