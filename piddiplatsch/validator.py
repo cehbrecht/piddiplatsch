@@ -1,7 +1,5 @@
-from jsonschema import Draft202012Validator
+from jsonschema import FormatChecker
 from jsonschema import validate as _validate
-
-# from jsonschema.exceptions import ValidationError
 
 import pyhandle
 from pyhandle.handleexceptions import HandleSyntaxError
@@ -11,11 +9,13 @@ from pyhandle.handleexceptions import HandleSyntaxError
 # https://lat.sk/2017/03/custom-json-schema-type-validator-format-python/
 # https://stackoverflow.com/questions/76602725/programmatic-python-format-check-in-jsonschema
 
+format_checker = FormatChecker()
 
-@Draft202012Validator.FORMAT_CHECKER.checks("handle", HandleSyntaxError)
+
+@format_checker.checks("handle", HandleSyntaxError)
 def check_handle(value):
     return pyhandle.utilhandle.check_handle_syntax(value)
 
 
 def validate(data, schema):
-    _validate(data, schema, format_checker=Draft202012Validator.FORMAT_CHECKER)
+    _validate(data, schema, format_checker=format_checker)
