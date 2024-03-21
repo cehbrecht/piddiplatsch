@@ -24,6 +24,7 @@ class MessageHandler:
         self._prefix = None
         self._binding_key = None
         self._schema = None
+        self._checker = None
         self.configure()
 
     def configure(self):
@@ -91,7 +92,8 @@ class MessageHandler:
         validate(record, schema=self.schema)
 
     def run_checks(self, record):
-        pass
+        if self._checker:
+            self._checker.run_checks(record)
 
     def publish(self, record, dry_run=False):
         handle = record.get("HANDLE")

@@ -6,7 +6,7 @@ from jsonschema.exceptions import ValidationError
 import pytest
 
 TEST_1 = {
-    "handle": "hdl:21.14106/test_abc1234",
+    "handle": "hdl:21.14106/test_abc_1",
     "url_landing_page": "https://www.wdc-climate.de/ui/entry?acronym=temperature",
     "is_part_of": "hdl:21.14106/test_temperature",
     "publisher": "WDCC at DKRZ",
@@ -46,6 +46,24 @@ def test_map_invalid_handle():
     with pytest.raises(ValidationError) as excinfo:
         handler.map(data)
     assert "'invalid_handle' is not a 'handle'" in str(excinfo.value)
+
+
+def test_map_invalid_parent():
+    handler = get_handler("wdcc")
+    data = copy.deepcopy(TEST_1)
+    data["is_part_of"] = "doi:10.1001/invalid"
+    with pytest.raises(ValueError) as excinfo:
+        handler.map(data)
+    assert "Parent is a doi, but does not exist" in str(excinfo.value)
+
+
+def test_map_missing_parent():
+    handler = get_handler("wdcc")
+    data = copy.deepcopy(TEST_1)
+    del data["is_part_of"]
+    with pytest.raises(ValidationError) as excinfo:
+        handler.map(data)
+    assert "'IS_PART_OF' is a required property" in str(excinfo.value)
 
 
 def test_process_message():

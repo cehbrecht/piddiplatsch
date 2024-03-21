@@ -39,10 +39,6 @@
             "minLength": 1,
             "maxLength": 200
         },
-        "IS_PART_OF": {
-            "type": "string",
-            "format": "uri"
-        },
         "KERNEL_INFORMATION_PROFILE": {
             "$comment": "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523",
             "const": "https://github.com/cehbrecht/piddiplatsch/raw/main/schema/wdcc.json",
@@ -56,5 +52,23 @@
         "PUBLISHER",
         "TITLE",
         "ENTRY_ID"
-    ]
+    ],
+    "if": {
+        "properties": {
+            "AGGREGATION_LEVEL": {
+                "const": "dataset"
+            }
+        }
+    },
+    "then": {
+        "properties": {
+            "IS_PART_OF": {
+                "type": "string",
+                "format": "uri"
+            }
+        },
+        "required": [
+            "IS_PART_OF"
+        ]
+    }
 }

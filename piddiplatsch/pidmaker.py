@@ -6,17 +6,12 @@ import logging
 LOGGER = logging.getLogger("piddiplatsch")
 
 
-class PidMaker:
-
-    def __init__(self):
-        self.client = DummyClient()
-
-    def create_handle(self, handle, record):
-        self.client.register_handle(handle, record)
-        return True
-
-    def check_if_handle_exists(self, handle):
-        return self.client.check_if_handle_exists(handle)
+def PidMaker(dry_run=True):
+    if dry_run:
+        client = DummyClient()
+    else:
+        client = RESTClient()
+    return client
 
 
 class BaseClient:
@@ -33,7 +28,10 @@ class DummyClient(BaseClient):
         LOGGER.info(f"record: {record}")
 
     def check_if_handle_exists(self, handle):
-        LOGGER.info(f"handle exists: {handle}")
+        if not handle:
+            return False
+        elif "invalid" in handle:
+            return False
         return True
 
 
