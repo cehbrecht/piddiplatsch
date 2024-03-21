@@ -48,6 +48,15 @@ def test_map_invalid_handle():
     assert "'invalid_handle' is not a 'handle'" in str(excinfo.value)
 
 
+def test_map_missing_parent():
+    handler = get_handler("wdcc")
+    data = copy.deepcopy(TEST_1)
+    del data["is_part_of"]
+    with pytest.raises(ValidationError) as excinfo:
+        handler.map(data)
+    assert "'IS_PART_OF' is a required property" in str(excinfo.value)
+
+
 def test_process_message():
     handler = get_handler("wdcc")
     msg = json.dumps(TEST_1)
