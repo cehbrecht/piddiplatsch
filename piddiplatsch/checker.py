@@ -40,9 +40,9 @@ class HandleChecker:
             self.check(record, name)
 
 
-checker = HandleChecker()
+handle_checker = HandleChecker()
 
 
-@checker.checks(name="nothing")
+@handle_checker.checks(name="nothing")
 def check_nothing(record):
     return True

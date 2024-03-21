@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from piddiplatsch.pidmaker import PidMaker
 from piddiplatsch.validator import validate
-from piddiplatsch.checker import checker
+from piddiplatsch.checker import handle_checker
 
 import logging
 
@@ -25,6 +25,7 @@ class MessageHandler:
         self._prefix = None
         self._binding_key = None
         self._schema = None
+        self._checker = None
         self.configure()
 
     def configure(self):
@@ -92,7 +93,8 @@ class MessageHandler:
         validate(record, schema=self.schema)
 
     def run_checks(self, record):
-        checker.run_checks(record)
+        if self._checker:
+            self._checker.run_checks(record)
 
     def publish(self, record, dry_run=False):
         handle = record.get("HANDLE")
