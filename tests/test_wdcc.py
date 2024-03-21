@@ -26,7 +26,6 @@ def test_map_invalid_handle():
     data["handle"] = "invalid_handle"
     record = handler.map(data)
     assert record["AGGREGATION_LEVEL"] == "dataset"
-    # assert False
 
 
 def test_process_message():
