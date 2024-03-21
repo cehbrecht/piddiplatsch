@@ -4,6 +4,11 @@
     "description": "A handle record schema for WDCC.",
     "type": "object",
     "properties": {
+        "HANDLE": {
+            "description": "Handle identifier. Example: 21.T14996/TESTCASE100",
+            "type": "string",
+            "format": "handle"
+        },
         "URL": {
             "description": "URL of the landing page",
             "type": "string",
@@ -39,7 +44,8 @@
             "format": "uri"
         },
         "KERNEL_INFORMATION_PROFILE": {
-            "const": "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523",
+            "$comment": "https://redmine.dkrz.de/projects/handle/wiki/PID_profile_wdcc_doku#TEST_20220523",
+            "const": "https://github.com/cehbrecht/piddiplatsch/raw/main/schema/wdcc.json",
             "type": "string",
             "format": "uri"
         }

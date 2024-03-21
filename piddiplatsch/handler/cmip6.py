@@ -1,4 +1,5 @@
 from piddiplatsch.handler.base import MessageHandler
+from piddiplatsch.tools import map
 
 
 class CMIP6Handler(MessageHandler):
@@ -8,8 +9,10 @@ class CMIP6Handler(MessageHandler):
         self._prefix = "21.14100"
         self._binding_key = "cmip6.#"
 
-    def map(self, handle, data):
+    def do_map(self, data):
+        handle = map.get_handle(data, self.prefix)
         record = {
+            "HANDLE": handle,
             "URL": f"https://handle-esgf.dkrz.de/lp/{handle}",
             "FIXED_CONTENT": data.get("fixed_content"),
             "AGGREGATION_LEVEL": data.get("aggregation_level"),
@@ -25,9 +28,4 @@ class CMIP6Handler(MessageHandler):
             "VERSION_NUMBER": data.get("version_number"),
             "HAS_PARTS": data.get("has_parts"),
         }
-        # remove empty values
-        for key in list(record.keys()):
-            value = record[key]
-            if not value:
-                del record[key]
         return record

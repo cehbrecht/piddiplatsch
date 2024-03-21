@@ -1,14 +1,20 @@
 import json
-import uuid
 from pathlib import Path
-from jsonschema import validate
-from jsonschema import Draft202012Validator
-import pyhandle
 from piddiplatsch.pidmaker import PidMaker
+from piddiplatsch.validator import validate
 
 import logging
 
 LOGGER = logging.getLogger("piddiplatsch")
+
+
+def clean(record):
+    # remove empty values
+    for key in list(record.keys()):
+        value = record[key]
+        if not value:
+            del record[key]
+    return record
 
 
 class MessageHandler:
@@ -61,42 +67,37 @@ class MessageHandler:
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
-    def process_message(self, message):
+    def process_message(self, message, dry_run=False):
+        LOGGER.info(f"We got a message: {message}")
+        data = self.read(message)
+        record = self.map(data)
+        self.publish(record, dry_run)
+
+    def read(self, message):
         data = json.loads(message)
-        LOGGER.info(f"We got a message: {data}")
-        handle = self.get_handle(data)
-        self.validate_handle(handle)
-        record = self.map(handle, data)
+        return data
+
+    def map(self, data):
+        record = self.do_map(data)
+        record = clean(record)
         self.validate(record)
-        self.run_checks(handle, record)
-        self.pid_maker.create_handle(handle, record)
+        self.run_checks(record)
+        return record
 
-    def get_handle(self, data):
-        if "handle" in data:
-            handle = data.get("handle")
-            handle = handle.lstrip("hdl:")
-        else:
-            handle = self.generate_handle()
-        return handle
-
-    def generate_handle(self, suffix=None):
-        if not suffix:
-            suffix = str(uuid.uuid4())
-        handle = f"{self.prefix}/{suffix}"
-        return handle
-
-    def validate_handle(self, handle):
-        pyhandle.utilhandle.check_handle_syntax(handle)
-
-    def map(self, handle, data):
+    def do_map(self, data):
         raise NotImplementedError
 
     def validate(self, record):
-        validate(
-            record,
-            schema=self.schema,
-            format_checker=Draft202012Validator.FORMAT_CHECKER,
-        )
+        validate(record, schema=self.schema)
 
-    def run_checks(self, handle, record):
+    def run_checks(self, record):
         pass
+
+    def publish(self, record, dry_run=False):
+        handle = record.get("HANDLE")
+        if dry_run is True:
+            LOGGER.warning(
+                f"skip publishing (dry-run): handle={handle}, record={record}."
+            )
+        else:
+            self.pid_maker.create_handle(handle, record)

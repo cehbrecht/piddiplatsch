@@ -1,4 +1,5 @@
 from piddiplatsch.handler.base import MessageHandler
+from piddiplatsch.tools import map
 
 import logging
 
@@ -11,8 +12,9 @@ class WDCCHandler(MessageHandler):
         self._prefix = "21.14106"
         self._binding_key = "wdcc.#"
 
-    def map(self, handle, data):
+    def do_map(self, data):
         record = {
+            "HANDLE": map.get_handle(data, self.prefix),
             "URL": data.get("url_landing_page"),
             "AGGREGATION_LEVEL": data.get("aggregation_level"),
             "PUBLISHER": data.get("publisher"),
@@ -24,10 +26,11 @@ class WDCCHandler(MessageHandler):
         # message_json['please_allow_datasets_without_parents']
         return record
 
-    def run_checks(self, handle, record):
-        self.check_parent(handle, record)
+    def run_checks(self, record):
+        self.check_parent(record)
 
-    def check_parent(self, handle, record):
+    def check_parent(self, record):
+        handle = record.get("HANDLE")
         parent = record.get("IS_PART_OF")
         if not parent:
             agg_level = record["AGGREGATION_LEVEL"]

@@ -6,7 +6,8 @@
     "properties": {
         "HANDLE": {
             "description": "Handle identifier. Example: 21.T14996/TESTCASE100",
-            "type": "string"
+            "type": "string",
+            "format": "handle"
         },
         "FIXED_CONTENT": {
             "type": "boolean"
