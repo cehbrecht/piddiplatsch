@@ -9,6 +9,14 @@ class HandleChecker:
     def __repr__(self):
         return f"<Checker checkers={sorted(self.checkers)}>"
 
+    @classmethod
+    def _cls_checks(cls, name):
+        def _checks(func):
+            cls.checkers[name] = func
+            return func
+
+        return _checks
+
     def checks(self, name):
         """
         This is a decorator to register a check function with a name.
@@ -40,9 +48,11 @@ class HandleChecker:
             self.check(record, name)
 
 
-handle_checker = HandleChecker()
-
-
-@handle_checker.checks(name="nothing")
-def check_nothing(record):
+@HandleChecker._cls_checks(name="ok")
+def check_ok(record):
     return True
+
+
+@HandleChecker._cls_checks(name="not_ok")
+def check_not_ok(record):
+    return False

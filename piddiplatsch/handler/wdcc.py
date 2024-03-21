@@ -7,7 +7,7 @@ import logging
 
 LOGGER = logging.getLogger("piddiplatsch")
 
-wdcc_checker = HandleChecker()
+wdcc_checker = HandleChecker(["ok"])
 
 
 class WDCCHandler(MessageHandler):
@@ -37,13 +37,7 @@ def check_parent(record):
     pid_maker = PidMaker()
     handle = record.get("HANDLE")
     parent = record.get("IS_PART_OF")
-    if not parent:
-        agg_level = record["AGGREGATION_LEVEL"]
-        if agg_level == "dataset":
-            msg = f'Handle {handle}: "is_part_of" is empty. Entities of type "dataset" must have a parent!'
-            LOGGER.error(msg)
-            raise ValueError(msg)
-    else:
+    if parent:
         ok = pid_maker.check_if_handle_exists(parent)
         if not ok:
             if parent.startswith("doi:"):
