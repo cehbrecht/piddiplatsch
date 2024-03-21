@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from piddiplatsch.pidmaker import PidMaker
 from piddiplatsch.validator import validate
+from piddiplatsch.checker import checker
 
 import logging
 
@@ -91,7 +92,7 @@ class MessageHandler:
         validate(record, schema=self.schema)
 
     def run_checks(self, record):
-        pass
+        checker.run_checks(record)
 
     def publish(self, record, dry_run=False):
         handle = record.get("HANDLE")
