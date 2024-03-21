@@ -1,6 +1,9 @@
 import json
 import copy
 from piddiplatsch.handler import get_handler
+from jsonschema.exceptions import ValidationError
+
+import pytest
 
 TEST_1 = {
     "handle": "hdl:21.14106/test_abc1234",
@@ -24,8 +27,9 @@ def test_map_invalid_handle():
     handler = get_handler("wdcc")
     data = copy.deepcopy(TEST_1)
     data["handle"] = "invalid_handle"
-    record = handler.map(data)
-    assert record["AGGREGATION_LEVEL"] == "dataset"
+    with pytest.raises(ValidationError) as excinfo:
+        handler.map(data)
+    assert "'invalid_handle' is not a 'handle'" in str(excinfo.value)
 
 
 def test_process_message():
