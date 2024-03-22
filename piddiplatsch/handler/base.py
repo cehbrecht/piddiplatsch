@@ -20,6 +20,11 @@ def clean(record):
     return record
 
 
+# HINT: see dataclasses usage.
+# * https://docs.python.org/3/library/dataclasses.html
+# * https://pypi.org/project/dataclasses-json
+
+
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Options:
@@ -82,20 +87,16 @@ class MessageHandler:
 
     def process_message(self, message, dry_run=False):
         LOGGER.info(f"We got a message: {message}")
-        data = self.read(message)
+        data = json.loads(message)
         record = self.map_and_validate(data)
         self.publish(record, dry_run)
-
-    def read(self, message):
-        data = json.loads(message)
-        return data
 
     def map_and_validate(self, data, options=None):
         options = Options.from_dict(data)
         record = self.map(data)
         record = clean(record)
         self.validate(record)
-        self.run_checks(record, options)
+        self.check(record, options)
         return record
 
     def map(self, data):
@@ -104,7 +105,7 @@ class MessageHandler:
     def validate(self, record):
         validate(record, schema=self.schema)
 
-    def run_checks(self, record, options):
+    def check(self, record, options):
         if self._checker:
             self._checker.run_checks(record, options)
 
