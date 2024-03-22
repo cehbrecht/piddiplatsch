@@ -39,8 +39,7 @@ class Options:
 
 
 class MessageHandler:
-    def __init__(self) -> None:
-        self.pid_maker = PidMaker()
+    def __init__(self):
         self._identifier = None
         self._prefix = None
         self._binding_key = None
@@ -120,9 +119,5 @@ class MessageHandler:
 
     def publish(self, record, dry_run=False):
         handle = record.get("HANDLE")
-        if dry_run is True:
-            LOGGER.warning(
-                f"skip publishing (dry-run): handle={handle}, record={record}."
-            )
-        else:
-            self.pid_maker.create_handle(handle, record)
+        pid_maker = PidMaker(dry_run)
+        pid_maker.register_handle(handle, record)
