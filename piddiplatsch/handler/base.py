@@ -71,21 +71,21 @@ class MessageHandler:
     def process_message(self, message, dry_run=False):
         LOGGER.info(f"We got a message: {message}")
         data = self.read(message)
-        record = self.map(data)
+        record = self.map_and_validate(data)
         self.publish(record, dry_run)
 
     def read(self, message):
         data = json.loads(message)
         return data
 
-    def map(self, data):
-        record = self.do_map(data)
+    def map_and_validate(self, data):
+        record = self.map(data)
         record = clean(record)
         self.validate(record)
         self.run_checks(record)
         return record
 
-    def do_map(self, data):
+    def map(self, data):
         raise NotImplementedError
 
     def validate(self, record):

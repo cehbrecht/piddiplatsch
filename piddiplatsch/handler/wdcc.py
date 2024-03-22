@@ -16,7 +16,7 @@ class WDCCHandler(MessageHandler):
         self._binding_key = "wdcc.#"
         self._checker = wdcc_checker
 
-    def do_map(self, data):
+    def map(self, data):
         record = {
             "HANDLE": map.get_handle(data, self.prefix),
             "URL": data.get("url_landing_page"),

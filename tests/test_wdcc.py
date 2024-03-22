@@ -19,7 +19,7 @@ TEST_1 = {
 
 def test_map():
     handler = get_handler("wdcc")
-    record = handler.map(TEST_1)
+    record = handler.map_and_validate(TEST_1)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
@@ -35,7 +35,7 @@ def test_map_missing_required_fields():
         data = copy.deepcopy(TEST_1)
         del data[field]
         with pytest.raises(ValidationError) as excinfo:
-            handler.map(data)
+            handler.map_and_validate(data)
         assert "is a required property" in str(excinfo.value)
 
 
@@ -44,7 +44,7 @@ def test_map_invalid_handle():
     data = copy.deepcopy(TEST_1)
     data["handle"] = "invalid_handle"
     with pytest.raises(ValidationError) as excinfo:
-        handler.map(data)
+        handler.map_and_validate(data)
     assert "'invalid_handle' is not a 'handle'" in str(excinfo.value)
 
 
@@ -53,7 +53,7 @@ def test_map_invalid_parent():
     data = copy.deepcopy(TEST_1)
     data["is_part_of"] = "doi:10.1001/invalid"
     with pytest.raises(ValueError) as excinfo:
-        handler.map(data)
+        handler.map_and_validate(data)
     assert "Parent is a doi, but does not exist" in str(excinfo.value)
 
 
@@ -62,7 +62,7 @@ def test_map_missing_parent():
     data = copy.deepcopy(TEST_1)
     del data["is_part_of"]
     with pytest.raises(ValidationError) as excinfo:
-        handler.map(data)
+        handler.map_and_validate(data)
     assert "'IS_PART_OF' is a required property" in str(excinfo.value)
 
 

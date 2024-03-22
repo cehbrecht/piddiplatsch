@@ -34,7 +34,7 @@ TEST_DATASET_1 = {
 
 def test_map_file():
     handler = get_handler("cmip6")
-    record = handler.map(TEST_FILE_1)
+    record = handler.map_and_validate(TEST_FILE_1)
     assert record["URL"] == "https://handle-esgf.dkrz.de/lp/21.t14996/testcase100"
     assert record["AGGREGATION_LEVEL"] == "FILE"
 
@@ -46,13 +46,13 @@ def test_map_file_missing_required_fields():
         del data[field]
 
         with pytest.raises(ValidationError) as excinfo:
-            handler.map(data)
+            handler.map_and_validate(data)
         assert "is a required property" in str(excinfo.value)
 
 
 def test_map_dataset():
     handler = get_handler("cmip6")
-    record = handler.map(TEST_DATASET_1)
+    record = handler.map_and_validate(TEST_DATASET_1)
     assert record["URL"] == "https://handle-esgf.dkrz.de/lp/21.t14996/testcase200"
     assert record["AGGREGATION_LEVEL"] == "DATASET"
 
@@ -64,7 +64,7 @@ def test_map_dataset_missing_required_fields():
         del data[field]
 
         with pytest.raises(ValidationError) as excinfo:
-            handler.map(data)
+            handler.map_and_validate(data)
         assert "is a required property" in str(excinfo.value)
 
 
