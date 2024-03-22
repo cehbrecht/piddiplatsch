@@ -28,7 +28,7 @@ def handler():
 
 
 def test_map(handler, data):
-    record = handler.map_and_validate(data)
+    record = handler.map_and_validate(data, dry_run=True)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
@@ -57,14 +57,14 @@ def test_map_invalid_parent(handler, data):
     data["is_part_of"] = "doi:10.1001/invalid"
     data["please_allow_datasets_without_parents"] = False
     with pytest.raises(CheckError) as excinfo:
-        handler.map_and_validate(data)
+        handler.map_and_validate(data, dry_run=True)
     assert "Parent is a doi, but does not exist" in str(excinfo.value)
 
 
 def test_map_invalid_parent_with_option(handler, data):
     data["is_part_of"] = "doi:10.1001/invalid"
     data["please_allow_datasets_without_parents"] = True
-    record = handler.map_and_validate(data)
+    record = handler.map_and_validate(data, dry_run=True)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 

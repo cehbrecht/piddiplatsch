@@ -91,15 +91,15 @@ class MessageHandler:
     def process_message(self, message, dry_run=False):
         LOGGER.info(f"We got a message: {message}")
         data = json.loads(message)
-        record = self.map_and_validate(data)
+        record = self.map_and_validate(data, dry_run)
         self.publish(record, dry_run)
 
-    def map_and_validate(self, data):
+    def map_and_validate(self, data, dry_run=False):
         options = self.map_options(data)
         record = self.map(data)
         record = clean(record)
         self.validate(record)
-        self.check(record, options)
+        self.check(record, options, dry_run)
         return record
 
     def map_options(self, data):
@@ -113,9 +113,10 @@ class MessageHandler:
     def validate(self, record):
         validate(record, schema=self.schema)
 
-    def check(self, record, options):
+    def check(self, record, options, dry_run):
         if self._checker:
-            self._checker.run_checks(record, options)
+            pid_maker = PidMaker(dry_run)
+            self._checker.run_checks(pid_maker, record, options)
 
     def publish(self, record, dry_run=False):
         handle = record.get("HANDLE")
