@@ -1,4 +1,3 @@
-from piddiplatsch.pidmaker import PidMaker
 from piddiplatsch.exceptions import CheckError
 
 
