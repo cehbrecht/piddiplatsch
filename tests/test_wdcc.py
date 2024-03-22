@@ -1,6 +1,7 @@
 import json
 import copy
 from piddiplatsch.handler import get_handler
+from piddiplatsch.exceptions import CheckError
 from jsonschema.exceptions import ValidationError
 
 import pytest
@@ -52,7 +53,7 @@ def test_map_invalid_parent():
     handler = get_handler("wdcc")
     data = copy.deepcopy(TEST_1)
     data["is_part_of"] = "doi:10.1001/invalid"
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(CheckError) as excinfo:
         handler.map_and_validate(data)
     assert "Parent is a doi, but does not exist" in str(excinfo.value)
 

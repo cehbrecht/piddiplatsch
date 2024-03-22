@@ -1,4 +1,5 @@
 from piddiplatsch.pidmaker import PidMaker
+from piddiplatsch.exceptions import CheckError
 
 
 class HandleChecker:
@@ -43,7 +44,7 @@ class HandleChecker:
         except Exception as e:
             cause = e
         if not result:
-            raise ValueError(
+            raise CheckError(
                 f"check {name!r} failed for record {record!r}: cause={cause}"
             )
 
