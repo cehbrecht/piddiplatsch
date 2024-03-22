@@ -95,13 +95,18 @@ class MessageHandler:
         record = self.map_and_validate(data)
         self.publish(record, dry_run)
 
-    def map_and_validate(self, data, options=None):
-        options = Options.from_dict(data)
+    def map_and_validate(self, data):
+        options = self.map_options(data)
         record = self.map(data)
         record = clean(record)
         self.validate(record)
         self.check(record, options)
         return record
+
+    def map_options(self, data):
+        options = Options.from_dict(data)
+        LOGGER.info(f"Options: {options}")
+        return options
 
     def map(self, data):
         raise NotImplementedError
