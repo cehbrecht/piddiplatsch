@@ -37,12 +37,14 @@ def check_parent(pid_maker, record, options):
         ok = pid_maker.check_if_handle_exists(parent)
         if not ok:
             if parent.startswith("doi:"):
-                msg = (
-                    f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
-                )
-                LOGGER.error(msg)
-                raise ValueError(msg)
+                if options.allow_no_parent:
+                    msg = f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
+                    msg += " Not throwing an error at the request of the user."
+                    LOGGER.warning(msg)
+                else:
+                    msg = f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
+                    raise ValueError(msg)
             elif parent.startswith("hdl:"):
                 msg = f'Handle {handle}: Parent is a handle and does not exist (yet?): "{parent}".'
-                LOGGER.warn(msg)
+                LOGGER.warning(msg)
     return True

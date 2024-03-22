@@ -57,6 +57,15 @@ def test_map_invalid_parent():
     assert "Parent is a doi, but does not exist" in str(excinfo.value)
 
 
+def test_map_invalid_parent_with_option():
+    handler = get_handler("wdcc")
+    data = copy.deepcopy(TEST_1)
+    data["is_part_of"] = "doi:10.1001/invalid"
+    data["please_allow_datasets_without_parents"] = True
+    record = handler.map_and_validate(data)
+    assert record["AGGREGATION_LEVEL"] == "dataset"
+
+
 def test_map_missing_parent():
     handler = get_handler("wdcc")
     data = copy.deepcopy(TEST_1)
