@@ -9,9 +9,6 @@ class CMIP6Handler(MessageHandler):
         self._prefix = "21.14100"
         self._binding_key = "cmip6.#"
 
-    def prepare(self, data):
-        return None
-
     def map(self, data):
         handle = map.get_handle(data, self.prefix)
         record = {

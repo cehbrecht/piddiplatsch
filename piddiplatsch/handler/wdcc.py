@@ -16,11 +16,6 @@ class WDCCHandler(MessageHandler):
         self._binding_key = "wdcc.#"
         self._checker = wdcc_checker
 
-    def prepare(self, data):
-        # TODO: handle flags like
-        # message_json['please_allow_datasets_without_parents']
-        return None
-
     def map(self, data):
         record = {
             "HANDLE": map.get_handle(data, self.prefix),
@@ -35,7 +30,7 @@ class WDCCHandler(MessageHandler):
 
 
 @wdcc_checker.checks(name="wdcc_parent")
-def check_parent(pid_maker, record):
+def check_parent(pid_maker, record, options):
     handle = record.get("HANDLE")
     parent = record.get("IS_PART_OF")
     if parent:

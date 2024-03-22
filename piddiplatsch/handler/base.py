@@ -1,5 +1,8 @@
 import json
 from pathlib import Path
+from dataclasses import dataclass, field
+from dataclasses_json import config, dataclass_json
+from dataclasses_json import Undefined
 from piddiplatsch.pidmaker import PidMaker
 from piddiplatsch.validator import validate
 
@@ -15,6 +18,15 @@ def clean(record):
         if not value:
             del record[key]
     return record
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class Options:
+    allow_no_parent: bool = field(
+        metadata=config(field_name="please_allow_datasets_without_parents"),
+        default=False,
+    )
 
 
 class MessageHandler:
@@ -71,7 +83,6 @@ class MessageHandler:
     def process_message(self, message, dry_run=False):
         LOGGER.info(f"We got a message: {message}")
         data = self.read(message)
-        self.prepare(data)
         record = self.map_and_validate(data)
         self.publish(record, dry_run)
 
@@ -79,14 +90,12 @@ class MessageHandler:
         data = json.loads(message)
         return data
 
-    def prepare(self, data):
-        raise NotImplementedError
-
-    def map_and_validate(self, data):
+    def map_and_validate(self, data, options=None):
+        options = Options.from_dict(data)
         record = self.map(data)
         record = clean(record)
         self.validate(record)
-        self.run_checks(record)
+        self.run_checks(record, options)
         return record
 
     def map(self, data):
@@ -95,9 +104,9 @@ class MessageHandler:
     def validate(self, record):
         validate(record, schema=self.schema)
 
-    def run_checks(self, record):
+    def run_checks(self, record, options):
         if self._checker:
-            self._checker.run_checks(record)
+            self._checker.run_checks(record, options)
 
     def publish(self, record, dry_run=False):
         handle = record.get("HANDLE")

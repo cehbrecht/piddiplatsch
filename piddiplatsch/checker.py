@@ -32,14 +32,14 @@ class HandleChecker:
 
         return _checks
 
-    def check(self, record, name):
+    def check(self, name, record, options):
         if name not in self.checkers:
             return
 
         func = self.checkers[name]
         result, cause = None, None
         try:
-            result = func(self.pid_maker, record)
+            result = func(self.pid_maker, record, options)
         except Exception as e:
             cause = e
         if not result:
@@ -47,16 +47,16 @@ class HandleChecker:
                 f"check {name!r} failed for record {record!r}: cause={cause}"
             )
 
-    def run_checks(self, record):
+    def run_checks(self, record, options):
         for name in self.checkers:
-            self.check(record, name)
+            self.check(name, record, options)
 
 
 @HandleChecker._cls_checks(name="ok")
-def check_ok(pid_maker, record):
+def check_ok(pid_maker, record, options):
     return True
 
 
 @HandleChecker._cls_checks(name="not_ok")
-def check_not_ok(pid_maker, record):
+def check_not_ok(pid_maker, record, options):
     return False
