@@ -16,7 +16,7 @@ class WDCCHandler(MessageHandler):
         self._binding_key = "wdcc.#"
         self._checker = wdcc_checker
 
-    def do_map(self, data):
+    def map(self, data):
         record = {
             "HANDLE": map.get_handle(data, self.prefix),
             "URL": data.get("url_landing_page"),
@@ -26,25 +26,25 @@ class WDCCHandler(MessageHandler):
             "TITLE": data.get("title"),
             "ENTRY_ID": data.get("entry_id"),
         }
-        # TODO: handle flags like
-        # message_json['please_allow_datasets_without_parents']
         return record
 
 
 @wdcc_checker.checks(name="wdcc_parent")
-def check_parent(pid_maker, record):
+def check_parent(pid_maker, record, options):
     handle = record.get("HANDLE")
     parent = record.get("IS_PART_OF")
     if parent:
         ok = pid_maker.check_if_handle_exists(parent)
         if not ok:
             if parent.startswith("doi:"):
-                msg = (
-                    f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
-                )
-                LOGGER.error(msg)
-                raise ValueError(msg)
+                if options.allow_no_parent:
+                    msg = f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
+                    msg += " Not throwing an error at the request of the user."
+                    LOGGER.warning(msg)
+                else:
+                    msg = f'Handle {handle}: Parent is a doi, but does not exist: "{parent}".'
+                    raise ValueError(msg)
             elif parent.startswith("hdl:"):
                 msg = f'Handle {handle}: Parent is a handle and does not exist (yet?): "{parent}".'
-                LOGGER.warn(msg)
+                LOGGER.warning(msg)
     return True

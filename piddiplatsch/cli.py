@@ -32,11 +32,12 @@ def cli(ctx):
     default=["all"],
     help="Choose which handlers should be used.",
 )
+@click.option("--dry-run", is_flag=True, help="Use dry run mode.")
 @click.pass_context
-def consume(ctx, host, port, exchange, handler):
+def consume(ctx, host, port, exchange, handler, dry_run):
     click.echo("Starting consumer ...")
     try:
-        do_consume(host, port, exchange, handler)
+        do_consume(host, port, exchange, handler, dry_run)
     except KeyboardInterrupt:
         print("Interrupted")
         try:

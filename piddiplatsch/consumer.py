@@ -21,16 +21,17 @@ LOGGER.setLevel(logging.INFO)
 LOGGER.addHandler(logging_handler())
 
 
-def do_consume(host, port, exchange, handlers):
-    c = PIDConsumer(exchange, handlers)
+def do_consume(host, port, exchange, handlers, dry_run):
+    c = PIDConsumer(exchange, handlers, dry_run)
     c.open_connection(host, port)
     c.start_consuming()
 
 
 class PIDConsumer:
-    def __init__(self, exchange, handlers):
+    def __init__(self, exchange, handlers, dry_run=False):
         self.exchange = exchange
         self.channel = None
+        self.dry_run = dry_run
         self.enabled_handlers = filter_handlers(handlers)
 
     def create_queue(self, queue_name, binding_key):
@@ -54,6 +55,7 @@ class PIDConsumer:
         LOGGER.info("Waiting for messages. To exit press CTRL+C")
 
         for handler in self.enabled_handlers:
+            handler.dry_run = self.dry_run
             self.channel.basic_consume(
                 queue=handler.queue_name,
                 on_message_callback=handler.on_message,

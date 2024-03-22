@@ -1,5 +1,10 @@
 import json
 from pathlib import Path
+from datetime import date
+from typing import Optional
+from dataclasses import dataclass, field
+from dataclasses_json import config, dataclass_json
+from dataclasses_json import Undefined
 from piddiplatsch.pidmaker import PidMaker
 from piddiplatsch.validator import validate
 
@@ -17,9 +22,25 @@ def clean(record):
     return record
 
 
+# HINT: see dataclasses usage.
+# * https://docs.python.org/3/library/dataclasses.html
+# * https://pypi.org/project/dataclasses-json
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class Options:
+    allow_no_parent: bool = field(
+        metadata=config(field_name="please_allow_datasets_without_parents"),
+        default=False,
+    )
+    operation: str = field(default="publish")
+    message_timestamp: Optional[date] = field(default=None)
+
+
 class MessageHandler:
-    def __init__(self) -> None:
-        self.pid_maker = PidMaker()
+    def __init__(self):
+        self._dry_run = False
         self._identifier = None
         self._prefix = None
         self._binding_key = None
@@ -29,6 +50,14 @@ class MessageHandler:
 
     def configure(self):
         raise NotImplementedError
+
+    @property
+    def dry_run(self):
+        return self._dry_run
+
+    @dry_run.setter
+    def dry_run(self, value):
+        self._dry_run = bool(value)
 
     @property
     def identifier(self):
@@ -68,38 +97,37 @@ class MessageHandler:
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
-    def process_message(self, message, dry_run=False):
+    def process_message(self, message):
         LOGGER.info(f"We got a message: {message}")
-        data = self.read(message)
-        record = self.map(data)
-        self.publish(record, dry_run)
-
-    def read(self, message):
         data = json.loads(message)
-        return data
+        record = self.map_and_validate(data)
+        self.publish(record)
 
-    def map(self, data):
-        record = self.do_map(data)
+    def map_and_validate(self, data):
+        options = self.map_options(data)
+        record = self.map(data)
         record = clean(record)
         self.validate(record)
-        self.run_checks(record)
+        self.check(record, options)
         return record
 
-    def do_map(self, data):
+    def map_options(self, data):
+        options = Options.from_dict(data)
+        LOGGER.info(f"Options: {options}")
+        return options
+
+    def map(self, data):
         raise NotImplementedError
 
     def validate(self, record):
         validate(record, schema=self.schema)
 
-    def run_checks(self, record):
+    def check(self, record, options):
         if self._checker:
-            self._checker.run_checks(record)
+            pid_maker = PidMaker(self.dry_run)
+            self._checker.run_checks(pid_maker, record, options)
 
-    def publish(self, record, dry_run=False):
+    def publish(self, record):
         handle = record.get("HANDLE")
-        if dry_run is True:
-            LOGGER.warning(
-                f"skip publishing (dry-run): handle={handle}, record={record}."
-            )
-        else:
-            self.pid_maker.create_handle(handle, record)
+        pid_maker = PidMaker(self.dry_run)
+        pid_maker.register_handle(handle, record)
