@@ -22,14 +22,17 @@ def data():
     return copy.deepcopy(_data)
 
 
-def test_map(data):
-    handler = get_handler("wdcc")
+@pytest.fixture
+def handler():
+    return get_handler("wdcc")
+
+
+def test_map(handler, data):
     record = handler.map_and_validate(data)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
-def test_map_missing_required_fields(data):
-    handler = get_handler("wdcc")
+def test_map_missing_required_fields(handler, data):
     for field in [
         "url_landing_page",
         "aggregation_level",
@@ -43,39 +46,34 @@ def test_map_missing_required_fields(data):
         assert "is a required property" in str(excinfo.value)
 
 
-def test_map_invalid_handle(data):
-    handler = get_handler("wdcc")
+def test_map_invalid_handle(handler, data):
     data["handle"] = "invalid_handle"
     with pytest.raises(ValidationError) as excinfo:
         handler.map_and_validate(data)
     assert "'invalid_handle' is not a 'handle'" in str(excinfo.value)
 
 
-def test_map_invalid_parent(data):
-    handler = get_handler("wdcc")
+def test_map_invalid_parent(handler, data):
     data["is_part_of"] = "doi:10.1001/invalid"
     with pytest.raises(CheckError) as excinfo:
         handler.map_and_validate(data)
     assert "Parent is a doi, but does not exist" in str(excinfo.value)
 
 
-def test_map_invalid_parent_with_option(data):
-    handler = get_handler("wdcc")
+def test_map_invalid_parent_with_option(handler, data):
     data["is_part_of"] = "doi:10.1001/invalid"
     data["please_allow_datasets_without_parents"] = True
     record = handler.map_and_validate(data)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
-def test_map_missing_parent(data):
-    handler = get_handler("wdcc")
+def test_map_missing_parent(handler, data):
     del data["is_part_of"]
     with pytest.raises(ValidationError) as excinfo:
         handler.map_and_validate(data)
     assert "'IS_PART_OF' is a required property" in str(excinfo.value)
 
 
-def test_process_message(data):
-    handler = get_handler("wdcc")
+def test_process_message(handler, data):
     msg = json.dumps(data)
     handler.process_message(msg, dry_run=True)
