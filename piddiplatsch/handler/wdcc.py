@@ -16,6 +16,11 @@ class WDCCHandler(MessageHandler):
         self._binding_key = "wdcc.#"
         self._checker = wdcc_checker
 
+    def prepare(self, data):
+        # TODO: handle flags like
+        # message_json['please_allow_datasets_without_parents']
+        return None
+
     def map(self, data):
         record = {
             "HANDLE": map.get_handle(data, self.prefix),
@@ -26,8 +31,6 @@ class WDCCHandler(MessageHandler):
             "TITLE": data.get("title"),
             "ENTRY_ID": data.get("entry_id"),
         }
-        # TODO: handle flags like
-        # message_json['please_allow_datasets_without_parents']
         return record
 
 
