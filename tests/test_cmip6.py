@@ -42,7 +42,9 @@ def data_dataset():
 
 @pytest.fixture
 def handler():
-    return get_handler("cmip6")
+    handler = get_handler("cmip6")
+    handler.dry_run = True
+    return handler
 
 
 def test_map_file(handler, data_file):
@@ -79,4 +81,4 @@ def test_map_dataset_missing_required_fields(handler, data_dataset):
 
 def test_process_message_dataset(handler, data_file):
     msg = json.dumps(data_file)
-    handler.process_message(msg, dry_run=True)
+    handler.process_message(msg)

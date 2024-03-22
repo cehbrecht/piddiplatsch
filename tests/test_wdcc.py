@@ -24,11 +24,13 @@ def data():
 
 @pytest.fixture
 def handler():
-    return get_handler("wdcc")
+    handler = get_handler("wdcc")
+    handler.dry_run = True
+    return handler
 
 
 def test_map(handler, data):
-    record = handler.map_and_validate(data, dry_run=True)
+    record = handler.map_and_validate(data)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
@@ -57,14 +59,14 @@ def test_map_invalid_parent(handler, data):
     data["is_part_of"] = "doi:10.1001/invalid"
     data["please_allow_datasets_without_parents"] = False
     with pytest.raises(CheckError) as excinfo:
-        handler.map_and_validate(data, dry_run=True)
+        handler.map_and_validate(data)
     assert "Parent is a doi, but does not exist" in str(excinfo.value)
 
 
 def test_map_invalid_parent_with_option(handler, data):
     data["is_part_of"] = "doi:10.1001/invalid"
     data["please_allow_datasets_without_parents"] = True
-    record = handler.map_and_validate(data, dry_run=True)
+    record = handler.map_and_validate(data)
     assert record["AGGREGATION_LEVEL"] == "dataset"
 
 
@@ -77,4 +79,4 @@ def test_map_missing_parent(handler, data):
 
 def test_process_message(handler, data):
     msg = json.dumps(data)
-    handler.process_message(msg, dry_run=True)
+    handler.process_message(msg)

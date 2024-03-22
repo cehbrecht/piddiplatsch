@@ -40,6 +40,7 @@ class Options:
 
 class MessageHandler:
     def __init__(self):
+        self._dry_run = False
         self._identifier = None
         self._prefix = None
         self._binding_key = None
@@ -49,6 +50,14 @@ class MessageHandler:
 
     def configure(self):
         raise NotImplementedError
+
+    @property
+    def dry_run(self):
+        return self._dry_run
+
+    @dry_run.setter
+    def dry_run(self, value):
+        self._dry_run = bool(value)
 
     @property
     def identifier(self):
@@ -88,18 +97,18 @@ class MessageHandler:
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
-    def process_message(self, message, dry_run=False):
+    def process_message(self, message):
         LOGGER.info(f"We got a message: {message}")
         data = json.loads(message)
-        record = self.map_and_validate(data, dry_run)
-        self.publish(record, dry_run)
+        record = self.map_and_validate(data)
+        self.publish(record)
 
-    def map_and_validate(self, data, dry_run=False):
+    def map_and_validate(self, data):
         options = self.map_options(data)
         record = self.map(data)
         record = clean(record)
         self.validate(record)
-        self.check(record, options, dry_run)
+        self.check(record, options)
         return record
 
     def map_options(self, data):
@@ -113,12 +122,12 @@ class MessageHandler:
     def validate(self, record):
         validate(record, schema=self.schema)
 
-    def check(self, record, options, dry_run):
+    def check(self, record, options):
         if self._checker:
-            pid_maker = PidMaker(dry_run)
+            pid_maker = PidMaker(self.dry_run)
             self._checker.run_checks(pid_maker, record, options)
 
-    def publish(self, record, dry_run=False):
+    def publish(self, record):
         handle = record.get("HANDLE")
-        pid_maker = PidMaker(dry_run)
+        pid_maker = PidMaker(self.dry_run)
         pid_maker.register_handle(handle, record)
