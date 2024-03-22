@@ -1,5 +1,7 @@
 import json
 from pathlib import Path
+from datetime import date
+from typing import Optional
 from dataclasses import dataclass, field
 from dataclasses_json import config, dataclass_json
 from dataclasses_json import Undefined
@@ -32,6 +34,8 @@ class Options:
         metadata=config(field_name="please_allow_datasets_without_parents"),
         default=False,
     )
+    operation: str = field(default="publish")
+    message_timestamp: Optional[date] = field(default=None)
 
 
 class MessageHandler:
