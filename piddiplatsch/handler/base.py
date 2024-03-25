@@ -5,6 +5,8 @@ from typing import Optional
 from dataclasses import dataclass, field
 from dataclasses_json import config, dataclass_json
 from dataclasses_json import Undefined
+from jsonschema import ValidationError
+from piddiplatsch.exceptions import CheckError
 from piddiplatsch.pidmaker import PidMaker
 from piddiplatsch.validator import validate
 
@@ -92,8 +94,12 @@ class MessageHandler:
         LOGGER.info(f"consume routing key: {method.routing_key}")
         try:
             self.process_message(body)
+        except ValidationError as e:
+            LOGGER.error(f"Validation failed: {e}")
+        except CheckError as e:
+            LOGGER.error(f"Checks have failed: {e}")
         except Exception:
-            LOGGER.exception("message processing failed")
+            LOGGER.exception("Internal error.")
         else:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 

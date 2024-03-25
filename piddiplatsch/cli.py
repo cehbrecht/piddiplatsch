@@ -5,7 +5,7 @@ import os
 import click
 
 from piddiplatsch.consumer import do_consume
-from piddiplatsch.send import send_topic as do_send
+from piddiplatsch.send import send_message as do_send
 
 CONTEXT_OBJ = dict()
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"], obj=CONTEXT_OBJ)
@@ -52,12 +52,10 @@ def consume(ctx, host, port, exchange, handler, dry_run):
 @click.option("--port", "-p", type=int, default="5672", help="The rabbitmq port.")
 @click.option("--exchange", "-e", default="pids", help="The exchange topic.")
 @click.option("--routing_key", "-k", default="wdcc.test", help="The routing key.")
-@click.option(
-    "--message", "-m", default="Hello World", help="A message you like to send."
-)
-def send(ctx, host, port, exchange, routing_key, message):
-    click.echo("Send to queue ...")
-    do_send(host, port, exchange, routing_key, message)
+@click.argument("file", type=click.Path(exists=True))
+def send(ctx, host, port, exchange, routing_key, file):
+    click.echo(f"Send to queue with routing key = {routing_key} ...")
+    do_send(host, port, exchange, routing_key, file)
 
 
 if __name__ == "__main__":

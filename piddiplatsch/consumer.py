@@ -1,5 +1,6 @@
 import pika
 
+
 from piddiplatsch.handler import filter_handlers
 
 import logging
