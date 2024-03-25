@@ -1,0 +1,9 @@
+{
+    "url_landing_page": "https://www.wdc-climate.de/ui/entry?acronym=wdcc_test",
+    "is_part_of": "hdl:21.14106/test_wdcc",
+    "publisher": "WDCC at DKRZ",
+    "aggregation_level": "dataset",
+    "title": "WDCC Test",
+    "entry_id": "2426195",
+    "please_allow_datasets_without_parents": false
+}
