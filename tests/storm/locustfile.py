@@ -1,26 +1,16 @@
-from locust import HttpUser, between, task, tag
+from locust import FastHttpUser, between, task
 
 import json
-import pika
-import time
 
 
-class RabbitMQUser(HttpUser):
-    host = "http://localhost:5672"
+# API endpoint for publishing messages to a queue
+# https://www.freekb.net/Article?id=3108
+PUBLISH_URL = "/api/exchanges/%2f/pids/publish"
+
+
+class RabbitMQUser(FastHttpUser):
+    host = "http://localhost:15672"
     wait_time = between(1, 5)
-
-    # def on_start(self):
-    #     # Establish connection to RabbitMQ server
-    #     self.connection = pika.BlockingConnection(
-    #         pika.ConnectionParameters(host="localhost", port=5672)
-    #     )
-    #     self.channel = self.connection.channel()
-
-    #     self.channel.exchange_declare(exchange="pids", exchange_type="topic")
-
-    # def on_stop(self):
-    #     # Close RabbitMQ connection
-    #     self.connection.close()
 
     @task
     def send_cmip6_message(self):
@@ -36,10 +26,26 @@ class RabbitMQUser(HttpUser):
             "url_original_data": "http://vesg.ipsl.upmc.fr/thredds/fileServer/cmip6/temp.nc",
             "url_replica": "http://esgf3.dkrz.de/thredds/fileServer/cmip6/temp.nc",
         }
-        # Publish message to RabbitMQ queue
-        # self.channel.basic_publish(
-        #     exchange="pids", routing_key="cmip6.test", body=json.dumps(message)
-        # )
 
-        time.sleep(1)
-        return True
+        data = json.dumps(message)
+
+        # Message payload
+        payload = {
+            "properties": {},
+            "routing_key": "cmip6.test",
+            "payload": data,
+            "payload_encoding": "string",
+        }
+
+        # Send the message to RabbitMQ
+        with self.rest(
+            "POST", PUBLISH_URL, json=payload, auth=("guest", "guest")
+        ) as response:
+            if response.js is None:
+                pass  # no need to do anything, already marked as failed
+            elif "routed" not in response.js:
+                response.failure(f"'routed' missing from response {response.text}")
+            elif response.js["routed"] is False:
+                response.failure(
+                    f"'routed' had an unexpected value: {response.js['routed']}"
+                )
