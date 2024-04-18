@@ -18,7 +18,7 @@ def logging_handler():
 
 
 LOGGER = logging.getLogger("piddiplatsch")
-LOGGER.setLevel(logging.WARNING)
+LOGGER.setLevel(logging.INFO)
 LOGGER.addHandler(logging_handler())
 
 

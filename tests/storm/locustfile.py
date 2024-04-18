@@ -62,7 +62,7 @@ class RabbitMQUser(FastHttpUser):
     def send_wdcc_message(self):
         # Define JSON message to be sent
         message = {
-            "handle": "hdl:21.14106/test_abc_1",
+            # "handle": "hdl:21.14106/test_abc_1",
             "url_landing_page": "https://www.wdc-climate.de/ui/entry?acronym=temperature",
             "is_part_of": "hdl:21.14106/test_temperature",
             "publisher": "WDCC at DKRZ",
