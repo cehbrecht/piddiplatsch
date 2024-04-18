@@ -36,8 +36,7 @@ class DummyClient(BaseClient):
         data = json.dumps(record)
 
         cursor.execute(
-            """INSERT INTO data (id, json_string) 
-                      VALUES (?, ?)""",
+            """INSERT INTO data (id, json_string) VALUES (?, ?)""",
             (handle, data),
         )
         conn.commit()
