@@ -1,5 +1,4 @@
 import pyhandle
-import time
 
 
 import logging
@@ -27,7 +26,6 @@ class DummyClient(BaseClient):
     def register_handle(self, handle, record):
         LOGGER.info(f"handle: {handle}")
         LOGGER.info(f"record: {record}")
-        time.sleep(1)
 
     def check_if_handle_exists(self, handle):
         if not handle:
