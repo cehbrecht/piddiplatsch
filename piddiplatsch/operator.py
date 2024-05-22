@@ -5,5 +5,6 @@ def publish():
 def update():
     pass
 
-def unpublish()
+
+def unpublish():
     pass
