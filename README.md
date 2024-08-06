@@ -39,12 +39,16 @@ piddiplatsch --help
 
 Start consumer:
 ```
-piddiplatsch consume
+piddiplatsch consume --help
+piddiplatsch consume --dry-run
 ```
 
 Send a message to the rabbit queue:
 ```
-piddiplatsch send
+piddiplatsch send --help
+piddiplatsch send -e wdcc.test examples/wdcc.json
+piddiplatsch send -e wdcc.test examples/wdcc_invalid.json
+piddiplatsch send -e cmip6.test examples/cmip6.json
 ```
 
 ## Credits

@@ -29,3 +29,14 @@ class CMIP6Handler(MessageHandler):
             "HAS_PARTS": data.get("has_parts"),
         }
         return record
+
+
+def check_handle_exists():
+    """
+    if handle_exists:
+        if is_replica:
+           if is_dataset:
+              check_fileset()
+           add_new_handle_to_record()
+    """
+    pass
